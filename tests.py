@@ -38,4 +38,76 @@ class TestUNFs(unittest.TestCase):
         self.assertEqual(u.unf, 'ECtRuXZaVqPomffPDuOOUg==')
         return
 
+    def test_nan(self):
+        u = unf.UNF(float('NaN'))
+        self.assertEqual(u.unf, 'GNcR8/UCnImaPpw47gdPNg==')
+        return
+
+    def test_pos_inf(self):
+        u = unf.UNF(float('+Inf'))
+        self.assertEqual(u.unf, 'MdAI70WZdDHnu6qmkpqUQg==')
+        return
+
+    def test_neg_inf(self):
+        u = unf.UNF(float('-Inf'))
+        self.assertEqual(u.unf, 'A7orv3pgAhljFnGjQVLCog==')
+        return
+
+    def test_pos_zero(self):
+        u = unf.UNF(0.0)
+        self.assertEqual(u.unf, 'YUvj33xEHnzirIHQyZaHow==')
+        return
+
+    def test_neg_zero(self):
+        u = unf.UNF(-0.0)
+        self.assertEqual(u.unf, 'qDM4PMUq1cMW+bqfBLBGZg==')
+        return
+
+    def test_value_1(self):
+        u = unf.UNF(0)
+        self.assertEqual(u.unf, 'YUvj33xEHnzirIHQyZaHow==')
+        return
+
+    def test_value_2(self):
+        u = unf.UNF(1)
+        self.assertEqual(u.unf, 'tv3XYCv524AfmlFyVOhuZg==')
+        return
+
+    def test_value_3(self):
+        u = unf.UNF(-300)
+        self.assertEqual(u.unf, 'ZTXyg54FoMfRDWZl6oWmFQ==')
+        return
+
+    def test_value_4(self):
+        u = unf.UNF(3.1415)
+        self.assertEqual(u.unf, 'vOSZmXXXpKfQcqZ0Cuu5/w==')
+        return
+
+    def test_value_5(self):
+        u = unf.UNF(0.00073)
+        self.assertEqual(u.unf, 'qhw3qzg3fEK0NNfoVxk4jQ==')
+        return
+
+    def test_value_6(self):
+        u = unf.UNF(1.2345675)
+        self.assertEqual(u.unf, 'vcKELUSS4s4k1snF4OTB9A==')
+        return
+
+    def test_value_7(self):
+        u = unf.UNF(1.2345685)
+        self.assertEqual(u.unf, 'vcKELUSS4s4k1snF4OTB9A==')
+        return
+
+    def test_value_8(self):
+        # see README.rounding
+        u = unf.UNF(1.2345635)
+        self.assertEqual(u.unf, 'auhsR5DIScLiAUb/SA2YVA==')
+        return
+
+    def test_value_9(self):
+        # see README.rounding
+        u = unf.UNF(1.2345645)
+        self.assertEqual(u.unf, 'auhsR5DIScLiAUb/SA2YVA==')
+        return
+
 # eof

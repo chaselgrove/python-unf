@@ -1,0 +1,27 @@
+See file COPYING distributed with unf for copyright and license.
+
+The choice of 1.2345675 and 1.2345685 in the UNF examples is
+unfortunate since the floating point representation of 1.2345675
+is slightly greater than its exact value and the floating point
+representation of 1.2345685 is slightly less than its exact value,
+so these both round to 1.234568 trivially.
+
+Another possible example is 1.2345635 and 1.2345645, whose floating
+point representations are slightly less than and slightly greater
+than the exact values, respectively, so they should round to 1.234563
+and 1.234565.
+
+However, this turns out not to be the case in the R implementation
+(UNF 2.0.5), where 1.2345635 and 1.2345645 both evaluate to
+UNF6:auhsR5DIScLiAUb/SA2YVA==.  This is because the rounding is
+done by signif(), which callings fprec() in the R C code, which in
+turn scales the values to 1234563.5 and 1234564.5 (represented
+exactly), then uses rint() to round.
+
+It may be the case that there are cases where the value passed to
+rint() is not represented exactly, but I have not chased them down.
+Instead, I have implemented the handling of numeric values to follow
+the treatment by R, namely to shift the decimal so the rounding is
+to an integer.  UNF._nn() initially follows fprec(), but then jumps
+straight to the exponential representation since we're already
+halfway there.
