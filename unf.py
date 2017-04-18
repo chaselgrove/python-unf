@@ -67,7 +67,6 @@ class UNF:
         else:
             pow10 = math.pow(10, -e10)
             n_int = rint(n/pow10)
-        print n_int, e10
         n_int_s = str(n_int)
         i_part = n_int_s[0]
         f_part = n_int_s[1:].rstrip('0')
