@@ -1,0 +1,8 @@
+change log for unf
+https://github.com/chaselgrove/python-unf
+
+0.1.0 -- 18 April 2017
+
+    Initial version.
+
+    UNF class for calculating Universal Numeric Fingerprints.
