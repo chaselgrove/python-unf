@@ -5,6 +5,11 @@
 import unittest
 import unf
 
+try:
+    import numpy
+except ImportError:
+    numpy = None
+
 # test source is 
 # https://raw.githubusercontent.com/IQSS/UNF/master/doc/unf_examples.txt
 # with help from the UNF R package (version 2.0.5)
@@ -228,6 +233,15 @@ class TestDigits(unittest.TestCase):
         u = unf.UNF(1.2345678, digits=9)
         self.assertEqual(u.unf, 'TCfkDjJvqAJ7wy4sdQFRaw==')
         self.assertEqual(u.formatted, 'UNF:6:N9:TCfkDjJvqAJ7wy4sdQFRaw==')
+        return
+
+@unittest.skipIf(not numpy, 'numpy not installed')
+class TestNumpy(unittest.TestCase):
+
+    def test(self):
+        u_b = unf.UNF([None, True, 2, 3.4, '5.6.7'])
+        u_n = unf.UNF(numpy.array((None, True, 2, 3.4, '5.6.7')))
+        self.assertEqual(u_n.unf, u_b.unf)
         return
 
 # eof

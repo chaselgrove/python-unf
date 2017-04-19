@@ -3,6 +3,11 @@
 import hashlib
 import math
 
+try:
+    import numpy
+except ImportError:
+    numpy = None
+
 class UNF:
 
     default_digits = 7
@@ -31,6 +36,8 @@ class UNF:
         return self.formatted
 
     def _normalize(self, data):
+        if numpy and isinstance(data, numpy.ndarray):
+            return ''.join([ self._normalize(el) for el in data ])
         if isinstance(data, (tuple, list)):
             return ''.join([ self._normalize(el) for el in data ])
         if data is None:
