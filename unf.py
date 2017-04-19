@@ -16,16 +16,7 @@ class UNF:
             raise ValueError('digits must be positive')
         self.digits = digits
         self.characters = 128
-        if self.data is None:
-            self._string = self._normalize_none(self.data)
-        elif isinstance(self.data, bool):
-            self._string = self._normalize_boolean(self.data)
-        elif isinstance(self.data, basestring):
-            self._string = self._normalize_basestring(self.data)
-        elif isinstance(self.data, (int, float, long)):
-            self._string = self._normalize_number(self.data)
-        else:
-            raise TypeError('unsupported type for data')
+        self._string = self._normalize(self.data)
         h = hashlib.sha256(self._string)
         self.hash = h.digest()
         self.unf = self.hash[:16].encode('base64').rstrip('\n')
@@ -38,6 +29,19 @@ class UNF:
 
     def __str__(self):
         return self.formatted
+
+    def _normalize(self, data):
+        if isinstance(data, (tuple, list)):
+            return ''.join([ self._normalize(el) for el in data ])
+        if data is None:
+            return self._normalize_none(data)
+        if isinstance(data, bool):
+            return self._normalize_boolean(data)
+        if isinstance(data, basestring):
+            return self._normalize_basestring(data)
+        if isinstance(data, (int, float, long)):
+            return self._normalize_number(data)
+        raise TypeError('unsupported type for data')
 
     def _normalize_none(self, data):
         return '\0\0\0'

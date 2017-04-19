@@ -8,6 +8,7 @@ import unf
 # test source is 
 # https://raw.githubusercontent.com/IQSS/UNF/master/doc/unf_examples.txt
 # with help from the UNF R package (version 2.0.5)
+# and http://guides.dataverse.org/en/latest/developers/unf/unf-v6.html
 
 class TestUNFs(unittest.TestCase):
 
@@ -120,6 +121,21 @@ class TestUNFs(unittest.TestCase):
         # see README.rounding
         u = unf.UNF(1.2345645)
         self.assertEqual(u.unf, 'auhsR5DIScLiAUb/SA2YVA==')
+        return
+
+    def test_vector(self):
+        u = unf.UNF((1.23456789, None, 0))
+        self.assertEqual(u.unf, 'Do5dfAoOOFt4FSj0JcByEw==')
+        return
+
+    def test_vector_2(self):
+        u = unf.UNF([1.23456789, None, 0])
+        self.assertEqual(u.unf, 'Do5dfAoOOFt4FSj0JcByEw==')
+        return
+
+    def test_vector_3(self):
+        u = unf.UNF([1, [1.23456789, None, 0]])
+        self.assertEqual(u.unf, 'njteMYS/Tlrq1og1AD8QtQ==')
         return
 
 class TestDigits(unittest.TestCase):
