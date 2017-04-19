@@ -5,7 +5,9 @@ import math
 
 class UNF:
 
-    def __init__(self, data, digits=7):
+    default_digits = 7
+
+    def __init__(self, data, digits=default_digits):
         self.version = 6
         self.data = data
         if not isinstance(digits, int):
@@ -25,7 +27,11 @@ class UNF:
         h = hashlib.sha256(self._string)
         self.hash = h.digest()
         self.unf = self.hash[:16].encode('base64').rstrip('\n')
-        self.formatted = 'UNF:%d:%s' % (self.version, self.unf)
+        if self.digits == self.default_digits:
+            self.formatted = 'UNF:%d:%s' % (self.version, self.unf)
+        else:
+            fmt = 'UNF:%d:N%d:%s'
+            self.formatted = fmt % (self.version, self.digits, self.unf)
         return
 
     def __str__(self):

@@ -173,4 +173,33 @@ class TestDigits(unittest.TestCase):
         self.assertEqual(u.unf, 'tv3XYCv524AfmlFyVOhuZg==')
         return
 
+    # ---------------------------------------------------------
+    # value tests, including header checks
+
+    def test_value_3(self):
+        u = unf.UNF(1.2345678, digits=6)
+        self.assertEqual(u.unf, 'Z8pf0CubsQBVtRiOQLQNVA==')
+        self.assertEqual(u.formatted, 'UNF:6:N6:Z8pf0CubsQBVtRiOQLQNVA==')
+        return
+
+    def test_value_4(self):
+        # no N in UNF header (default digits)
+        u = unf.UNF(1.2345678, digits=7)
+        self.assertEqual(u.unf, 'vcKELUSS4s4k1snF4OTB9A==')
+        self.assertEqual(u.formatted, 'UNF:6:vcKELUSS4s4k1snF4OTB9A==')
+        return
+
+    def test_value_5(self):
+        u = unf.UNF(1.2345678, digits=8)
+        self.assertEqual(u.unf, 'TCfkDjJvqAJ7wy4sdQFRaw==')
+        self.assertEqual(u.formatted, 'UNF:6:N8:TCfkDjJvqAJ7wy4sdQFRaw==')
+        return
+
+    def test_value_6(self):
+        # same as digits=8 (we've run out of siginficant digits in the data)
+        u = unf.UNF(1.2345678, digits=9)
+        self.assertEqual(u.unf, 'TCfkDjJvqAJ7wy4sdQFRaw==')
+        self.assertEqual(u.formatted, 'UNF:6:N9:TCfkDjJvqAJ7wy4sdQFRaw==')
+        return
+
 # eof
