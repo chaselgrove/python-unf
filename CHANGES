@@ -6,3 +6,8 @@ https://github.com/chaselgrove/python-unf
     Initial version.
 
     UNF class for calculating Universal Numeric Fingerprints.
+
+0.2.0 -- 19 April 2017
+
+    Added full support for non-default precision (type and value checking, 
+    header in printable UNF, and unit tests).

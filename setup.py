@@ -5,7 +5,7 @@ from distutils.core import setup
 long_description = open('README.rst').read()
 
 setup(name='unf', 
-      version='0.1.0', 
+      version='0.2.0', 
       description='Universal Numeric Fingerprints', 
       author='Christian Haselgrove', 
       author_email='christian.haselgrove@umassmed.edu', 
