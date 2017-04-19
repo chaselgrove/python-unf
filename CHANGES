@@ -11,3 +11,7 @@ https://github.com/chaselgrove/python-unf
 
     Added full support for non-default precision (type and value checking, 
     header in printable UNF, and unit tests).
+
+0.3.0 -- 19 April 2017
+
+    Added support for booleans and vectors (tuples and lists).
