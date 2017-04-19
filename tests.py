@@ -110,4 +110,67 @@ class TestUNFs(unittest.TestCase):
         self.assertEqual(u.unf, 'auhsR5DIScLiAUb/SA2YVA==')
         return
 
+class TestDigits(unittest.TestCase):
+
+    # ---------------------------------------------------------
+    # type and value checking
+
+    def test_type(self):
+        with self.assertRaises(TypeError):
+            unf.UNF('', digits='')
+        return
+
+    def test_value(self):
+        with self.assertRaises(ValueError):
+            unf.UNF('', digits=0)
+        return
+
+    # ---------------------------------------------------------
+    # the following should be unaffected by digits=2
+
+    def test_missing(self):
+        u = unf.UNF(None, digits=2)
+        self.assertEqual(u.unf, 'cJ6AyISHokEeHuTfufIqhg==')
+        return
+
+    def test_string(self):
+        u = unf.UNF('A character String', digits=2)
+        self.assertEqual(u.unf, 'FYqU7uBl885eHMbpco1ooA==')
+        return
+
+    def test_nan(self):
+        u = unf.UNF(float('NaN'), digits=2)
+        self.assertEqual(u.unf, 'GNcR8/UCnImaPpw47gdPNg==')
+        return
+
+    def test_pos_inf(self):
+        u = unf.UNF(float('+Inf'), digits=2)
+        self.assertEqual(u.unf, 'MdAI70WZdDHnu6qmkpqUQg==')
+        return
+
+    def test_neg_inf(self):
+        u = unf.UNF(float('-Inf'), digits=2)
+        self.assertEqual(u.unf, 'A7orv3pgAhljFnGjQVLCog==')
+        return
+
+    def test_pos_zero(self):
+        u = unf.UNF(0.0, digits=2)
+        self.assertEqual(u.unf, 'YUvj33xEHnzirIHQyZaHow==')
+        return
+
+    def test_neg_zero(self):
+        u = unf.UNF(-0.0, digits=2)
+        self.assertEqual(u.unf, 'qDM4PMUq1cMW+bqfBLBGZg==')
+        return
+
+    def test_value_1(self):
+        u = unf.UNF(0, digits=2)
+        self.assertEqual(u.unf, 'YUvj33xEHnzirIHQyZaHow==')
+        return
+
+    def test_value_2(self):
+        u = unf.UNF(1, digits=2)
+        self.assertEqual(u.unf, 'tv3XYCv524AfmlFyVOhuZg==')
+        return
+
 # eof

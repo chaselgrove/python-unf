@@ -8,6 +8,10 @@ class UNF:
     def __init__(self, data, digits=7):
         self.version = 6
         self.data = data
+        if not isinstance(digits, int):
+            raise TypeError('digits must be an integer')
+        if digits < 1:
+            raise ValueError('digits must be positive')
         self.digits = digits
         self.characters = 128
         if data is None:
