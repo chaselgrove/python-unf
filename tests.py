@@ -16,6 +16,18 @@ class TestUNFs(unittest.TestCase):
         self.assertEqual(u.unf, 'cJ6AyISHokEeHuTfufIqhg==')
         return
 
+    def test_true(self):
+        u_t = unf.UNF(True)
+        u_1 = unf.UNF(1)
+        self.assertEqual(u_t.unf, u_1.unf)
+        return
+
+    def test_false(self):
+        u_f = unf.UNF(False)
+        u_0 = unf.UNF(0)
+        self.assertEqual(u_f.unf, u_0.unf)
+        return
+
     def test_string(self):
         u = unf.UNF('A character String')
         self.assertEqual(u.unf, 'FYqU7uBl885eHMbpco1ooA==')

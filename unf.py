@@ -16,11 +16,13 @@ class UNF:
             raise ValueError('digits must be positive')
         self.digits = digits
         self.characters = 128
-        if data is None:
+        if self.data is None:
             self._string = self._normalize_none(self.data)
-        elif isinstance(data, basestring):
+        elif isinstance(self.data, bool):
+            self._string = self._normalize_boolean(self.data)
+        elif isinstance(self.data, basestring):
             self._string = self._normalize_basestring(self.data)
-        elif isinstance(data, (int, float, long)):
+        elif isinstance(self.data, (int, float, long)):
             self._string = self._normalize_number(self.data)
         else:
             raise TypeError('unsupported type for data')
@@ -42,6 +44,11 @@ class UNF:
 
     def _normalize_basestring(self, data):
         return data.encode('utf-8')[:self.characters] + '\n\0'
+
+    def _normalize_boolean(self, data):
+        if data:
+            return self._normalize_number(1)
+        return self._normalize_number(0)
 
     def _normalize_number(self, data):
         data = float(data)
