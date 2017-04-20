@@ -37,6 +37,11 @@ class UNF:
 
     def _normalize(self, data):
         if numpy and isinstance(data, numpy.ndarray):
+            # is the array all numeric?  if so, try to speed up the 
+            # calculations
+            if numpy.issubdtype(data.dtype, int) or \
+                numpy.issubdtype(data.dtype, float):
+                return self._normalize_ndarray(data)
             return ''.join([ self._normalize(el) for el in data ])
         if isinstance(data, (tuple, list)):
             return ''.join([ self._normalize(el) for el in data ])
@@ -101,6 +106,56 @@ class UNF:
         if exp == 0:
             return '%s%s.%se+\n\0' % (n_sign, i_part, f_part)
         return '%s%s.%se%+d\n\0' % (n_sign, i_part, f_part, exp)
+
+    def _normalize_ndarray(self, data):
+        """normalize a numpy array with only numeric values
+
+        this is meant to increase speed over calling _normalize_number() 
+        for each element
+        """
+        nan_inds = numpy.isnan(data)
+        inf_inds = numpy.isinf(data)
+        zero_inds = data == 0.0
+        signs = numpy.copysign(1, data)
+        data_c = signs * data
+        data_c[nan_inds | inf_inds | zero_inds] = 1.0
+        l10 = numpy.log10(data_c)
+        exp = numpy.floor(l10).astype(int)
+        e10 = self.digits - 1 - exp
+
+        pow10 = numpy.ndarray(e10.size, dtype=int)
+        n_int = numpy.ndarray(e10.size, dtype=float)
+
+        e10_pos_inds = e10 > 0
+        e10_npos_inds = e10 <= 0
+        n_int[e10_pos_inds] = data_c[e10_pos_inds] * 10**e10[e10_pos_inds]
+        n_int[e10_npos_inds] = data_c[e10_npos_inds] / 10**-e10[e10_npos_inds]
+        n_int = numpy.rint(n_int).astype(int)
+
+        s = [None] * data.size
+        for i in xrange(data.size):
+            assert len(n_int[i].astype(str)) == self.digits
+            if nan_inds[i]:
+                s[i] = '+nan\n\0'
+                continue
+            if signs[i] > 0:
+                sign = '+'
+            else:
+                sign = '-'
+            if inf_inds[i]:
+                s[i] = '%sinf\n\0' % sign
+                continue
+            if zero_inds[i]:
+                s[i] = '%s0.e+\n\0' % sign
+                continue
+            sv = str(n_int[i])
+            i_part = sv[0]
+            f_part = sv[1:].rstrip('0')
+            if exp[i] == 0:
+                s[i] = '%s%s.%se+\n\0' % (sign, i_part, f_part)
+            else:
+                s[i] = '%s%s.%se%+d\n\0' % (sign, i_part, f_part, exp[i])
+        return ''.join(s)
 
 def rint(n):
     """rounds n to the nearest integer, towards even if a tie"""

@@ -239,8 +239,19 @@ class TestDigits(unittest.TestCase):
 class TestNumpy(unittest.TestCase):
 
     def test(self):
-        u_b = unf.UNF([None, True, 2, 3.4, '5.6.7'])
-        u_n = unf.UNF(numpy.array((None, True, 2, 3.4, '5.6.7')))
+        t = (None, True, 2, 3.4, '5.6.7')
+        u_b = unf.UNF(t)
+        u_n = unf.UNF(numpy.array(t))
+        self.assertEqual(u_n.unf, u_b.unf)
+        return
+
+    def test_speed(self):
+        t = (float('NaN'), float('+Inf'), float('-Inf'), 
+             0.0, -0.0, 0, 1, -300, 
+             3.1415, 0.00073, 
+             1.2345675, 1.2345685, 1.2345635, 1.2345645)
+        u_b = unf.UNF(t)
+        u_n = unf.UNF(numpy.array(t))
         self.assertEqual(u_n.unf, u_b.unf)
         return
 
