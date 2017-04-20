@@ -132,30 +132,30 @@ class UNF:
         n_int[e10_npos_inds] = data_c[e10_npos_inds] / 10**-e10[e10_npos_inds]
         n_int = numpy.rint(n_int).astype(int)
 
-        s = [None] * data.size
-        for i in xrange(data.size):
-            assert len(n_int[i].astype(str)) == self.digits
-            if nan_inds[i]:
-                s[i] = '+nan\n\0'
-                continue
-            if signs[i] > 0:
-                sign = '+'
-            else:
-                sign = '-'
-            if inf_inds[i]:
-                s[i] = '%sinf\n\0' % sign
-                continue
-            if zero_inds[i]:
-                s[i] = '%s0.e+\n\0' % sign
-                continue
-            sv = str(n_int[i])
-            i_part = sv[0]
-            f_part = sv[1:].rstrip('0')
-            if exp[i] == 0:
-                s[i] = '%s%s.%se+\n\0' % (sign, i_part, f_part)
-            else:
-                s[i] = '%s%s.%se%+d\n\0' % (sign, i_part, f_part, exp[i])
-        return ''.join(s)
+        dpow = 10**(self.digits-1)
+        n_ipart = numpy.floor_divide(n_int, dpow).astype(str)
+        n_fpart = n_int % dpow
+        n_fpart = numpy.char.rstrip(n_fpart.astype(str), '0')
+        sign_arr = numpy.full(n_int.shape, '+', dtype='|S1')
+        sign_arr[signs < 0] = '-'
+        exp_arr = exp.astype(str)
+        exp_arr[exp == 0] = ''
+        exp_sign_arr = numpy.full(n_int.shape, '', dtype='|S1')
+        exp_sign_arr[exp >= 0] = '+'
+        s = numpy.char.add(sign_arr, n_ipart)
+        s = numpy.char.add(s, '.')
+        s = numpy.char.add(s, n_fpart)
+        s = numpy.char.add(s, 'e')
+        s = numpy.char.add(s, exp_sign_arr)
+        s = numpy.char.add(s, exp_arr)
+
+        s[nan_inds] = '+nan'
+        s[numpy.logical_and(inf_inds, signs > 0)] = '+inf'
+        s[numpy.logical_and(inf_inds, signs < 0)] = '-inf'
+        s[numpy.logical_and(zero_inds, signs > 0)] = '+0.e+'
+        s[numpy.logical_and(zero_inds, signs < 0)] = '-0.e+'
+
+        return '\n\0'.join(s) + '\n\0'
 
 def rint(n):
     """rounds n to the nearest integer, towards even if a tie"""
