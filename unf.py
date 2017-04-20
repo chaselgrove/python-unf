@@ -108,30 +108,35 @@ class UNF:
         return '%s%s.%se%+d\n\0' % (n_sign, i_part, f_part, exp)
 
     def _normalize_ndarray(self, data):
+
         """normalize a numpy array with only numeric values
 
         this is meant to increase speed over calling _normalize_number() 
         for each element
         """
+
+        # --- find special values and record signs, make all values positive, 
+        # --- then replace special values with dummy numbers
         nan_inds = numpy.isnan(data)
         inf_inds = numpy.isinf(data)
         zero_inds = data == 0.0
         signs = numpy.copysign(1, data)
         data_c = signs * data
         data_c[nan_inds | inf_inds | zero_inds] = 1.0
+
+        # --- shift the decimal points and round
         l10 = numpy.log10(data_c)
         exp = numpy.floor(l10).astype(int)
         e10 = self.digits - 1 - exp
-
         pow10 = numpy.ndarray(e10.size, dtype=int)
         n_int = numpy.ndarray(e10.size, dtype=float)
-
         e10_pos_inds = e10 > 0
         e10_npos_inds = e10 <= 0
         n_int[e10_pos_inds] = data_c[e10_pos_inds] * 10**e10[e10_pos_inds]
         n_int[e10_npos_inds] = data_c[e10_npos_inds] / 10**-e10[e10_npos_inds]
         n_int = numpy.rint(n_int).astype(int)
 
+        # --- generate normalization strings
         dpow = 10**(self.digits-1)
         n_ipart = numpy.floor_divide(n_int, dpow).astype(str)
         n_fpart = n_int % dpow
@@ -140,6 +145,7 @@ class UNF:
         sign_arr[signs < 0] = '-'
         exp_arr = exp.astype(str)
         exp_arr[exp == 0] = ''
+        # minus signs will come from the exponent itself
         exp_sign_arr = numpy.full(n_int.shape, '', dtype='|S1')
         exp_sign_arr[exp >= 0] = '+'
         s = numpy.char.add(sign_arr, n_ipart)
@@ -149,6 +155,7 @@ class UNF:
         s = numpy.char.add(s, exp_sign_arr)
         s = numpy.char.add(s, exp_arr)
 
+        # --- set normalization strings for special values
         s[nan_inds] = '+nan'
         s[numpy.logical_and(inf_inds, signs > 0)] = '+inf'
         s[numpy.logical_and(inf_inds, signs < 0)] = '-inf'
