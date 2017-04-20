@@ -19,3 +19,10 @@ https://github.com/chaselgrove/python-unf
 0.4.0 -- 19 April 2017
 
     Added support for numpy arrays (as vectors).
+
+0.4.1 -- 20 April 2017
+
+    Requiring numpy arrays to be one-dimensional.
+
+    Added code to speed up normalization of numpy arrays if all values are 
+    numeric.
