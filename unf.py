@@ -37,6 +37,8 @@ class UNF:
 
     def _normalize(self, data):
         if numpy and isinstance(data, numpy.ndarray):
+            if data.ndim != 1:
+                raise TypeError('numpy arrays must be one-dimensional')
             # is the array all numeric?  if so, try to speed up the 
             # calculations
             if numpy.issubdtype(data.dtype, int) or \

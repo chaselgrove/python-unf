@@ -255,4 +255,10 @@ class TestNumpy(unittest.TestCase):
         self.assertEqual(u_n.unf, u_b.unf)
         return
 
+    def test_dimensions(self):
+        a = numpy.ndarray((2, 3))
+        with self.assertRaises(TypeError):
+            unf.UNF(a)
+        return
+
 # eof
