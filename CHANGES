@@ -26,3 +26,9 @@ https://github.com/chaselgrove/python-unf
 
     Added code to speed up normalization of numpy arrays if all values are 
     numeric.
+
+0.5.0 -- 21 April 2017
+
+    Requiring tuples and lists to contain only primitives.
+
+    Allowing multi-dimensional numpy arrays.

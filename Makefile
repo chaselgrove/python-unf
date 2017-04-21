@@ -5,9 +5,9 @@ default : build
 test : 
 	python -m unittest -vb tests
 
-build : dist/unf-0.4.1.tar.gz
+build : dist/unf-0.5.0.tar.gz
 
-dist/unf-0.4.1.tar.gz : 
+dist/unf-0.5.0.tar.gz : 
 	python setup.py sdist
 
 register : 
