@@ -38,7 +38,9 @@ class UNF:
     def _normalize(self, data):
         if numpy and isinstance(data, numpy.ndarray):
             if data.ndim > 1:
-                return ''.join([ self._normalize(el) for el in data ])
+                unfs = [ UNF(el).formatted for el in data ]
+                print unfs
+                return self._normalize(unfs)
             # is the array all numeric?  if so, try to speed up the 
             # calculations
             if numpy.issubdtype(data.dtype, int) or \
