@@ -46,7 +46,10 @@ class UNF:
                 return self._normalize_ndarray(data)
             return ''.join([ self._normalize(el) for el in data ])
         if isinstance(data, (tuple, list)):
-            return ''.join([ self._normalize(el) for el in data ])
+            return ''.join([ self._normalize_primitive(el) for el in data ])
+        return self._normalize_primitive(data)
+
+    def _normalize_primitive(self, data):
         if data is None:
             return self._normalize_none(data)
         if isinstance(data, bool):

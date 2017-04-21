@@ -139,8 +139,8 @@ class TestUNFs(unittest.TestCase):
         return
 
     def test_vector_3(self):
-        u = unf.UNF([1, [1.23456789, None, 0]])
-        self.assertEqual(u.unf, 'njteMYS/Tlrq1og1AD8QtQ==')
+        with self.assertRaises(TypeError):
+            unf.UNF([1, [1.23456789, None, 0]])
         return
 
 class TestDigits(unittest.TestCase):
@@ -250,13 +250,6 @@ class TestNumpy(unittest.TestCase):
              0.0, -0.0, 0, 1, -300, 
              3.1415, 0.00073, 
              1.2345675, 1.2345685, 1.2345635, 1.2345645)
-        u_b = unf.UNF(t)
-        u_n = unf.UNF(numpy.array(t))
-        self.assertEqual(u_n.unf, u_b.unf)
-        return
-
-    def test_matrix(self):
-        t = ((1, 2, 3), (4, 5, 6))
         u_b = unf.UNF(t)
         u_n = unf.UNF(numpy.array(t))
         self.assertEqual(u_n.unf, u_b.unf)
