@@ -1,0 +1,31 @@
+#!/usr/bin/python
+
+import sys
+import unf
+import numpy
+
+a = numpy.array(range(1, 9))
+a.shape = (4, 2)
+print a.shape
+for subarr in a:
+    print subarr, unf.UNF(subarr).formatted
+print
+
+a = numpy.array(range(1, 9))
+a.shape = (2, 4)
+print a.shape
+for subarr in a:
+    print subarr, unf.UNF(subarr).formatted
+print
+
+a = numpy.array(range(1, 9))
+a.shape = (2, 2, 2)
+print a.shape
+for subarr in a:
+    for subarr2 in subarr:
+        print subarr2, unf.UNF(subarr2).formatted
+print
+
+sys.exit(0)
+
+# eof

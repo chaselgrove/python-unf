@@ -261,4 +261,70 @@ class TestNumpy(unittest.TestCase):
         self.assertEqual(u.unf, 'FIW9D0mSBOYa5z0uzbtt2g==')
         return
 
+@unittest.skipIf(not numpy, 'numpy not installed')
+class TestSortedArray(unittest.TestCase):
+
+    def generate_array(self, shape):
+        a = numpy.array(range(1, 9))
+        a.shape = shape
+        return a
+
+    def test_8(self):
+        a = self.generate_array((8, ))
+        u = unf.UNF(a)
+        self.assertEqual(u.unf, 'EOs7/j65kxOaQ+7pcXc3Ow==')
+        return
+
+    def test_42(self):
+        a = self.generate_array((4, 2))
+        u = unf.UNF(a)
+        print u.unf
+        self.assertEqual(u.unf, 'vCqIYGEEKs8eFOi5EyLHag==')
+        return
+
+    def test_24(self):
+        a = self.generate_array((2, 4))
+        u = unf.UNF(a)
+        self.assertEqual(u.unf, '1Qdono2iFAPISpXZl4pOIg==')
+        return
+
+    def test_222(self):
+        a = self.generate_array((2, 2, 2))
+        u = unf.UNF(a)
+        self.assertEqual(u.unf, 'WiQjZr8l5pFMM5jL//rPtw==')
+        return
+
+@unittest.skipIf(not numpy, 'numpy not installed')
+class TestSortedArray(unittest.TestCase):
+
+    def generate_array(self, shape):
+        a = numpy.array(range(1, 9))
+        a.shape = shape
+        return a
+
+    def test_8(self):
+        a = self.generate_array((8, ))
+        u = unf.UNF(a, sort_array=True)
+        self.assertEqual(u.unf, 'EOs7/j65kxOaQ+7pcXc3Ow==')
+        return
+
+    def test_42(self):
+        a = self.generate_array((4, 2))
+        u = unf.UNF(a, sort_array=True)
+        print u.unf
+        self.assertEqual(u.unf, 'sPxO/826GsUCcXOWNc+Xpg==')
+        return
+
+    def test_24(self):
+        a = self.generate_array((2, 4))
+        u = unf.UNF(a, sort_array=True)
+        self.assertEqual(u.unf, 'X6ZAvBZY2zpQOV/seLYcYg==')
+        return
+
+    def test_222(self):
+        a = self.generate_array((2, 2, 2))
+        u = unf.UNF(a, sort_array=True)
+        self.assertEqual(u.unf, 'm4N25iu0dFUy9cUnx307Dg==')
+        return
+
 # eof

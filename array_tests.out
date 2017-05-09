@@ -1,0 +1,81 @@
+(4, 2)
+[1 2] UNF:6:sFUGRm2piAZ3HVfNg1RlLQ==
+[3 4] UNF:6:xTOjGElLnhT+htjRYrwHrw==
+[5 6] UNF:6:z+91TcVJIrK9MqNfO/pbAQ==
+[7 8] UNF:6:Va00rfOLHEjde7b2enJzQw==
+
+(2, 4)
+[1 2 3 4] UNF:6:aWgJoh/Y7/Qo6uK9zs7ovQ==
+[5 6 7 8] UNF:6:RkP2XPeCClfWHDH1v83LGg==
+
+(2, 2, 2)
+[1 2] UNF:6:sFUGRm2piAZ3HVfNg1RlLQ==
+[3 4] UNF:6:xTOjGElLnhT+htjRYrwHrw==
+[5 6] UNF:6:z+91TcVJIrK9MqNfO/pbAQ==
+[7 8] UNF:6:Va00rfOLHEjde7b2enJzQw==
+
+--- end script output
+
+(4, 2)
+
+    sorted: ('UNF:6:Va00rfOLHEjde7b2enJzQw==', 
+             'UNF:6:sFUGRm2piAZ3HVfNg1RlLQ==', 
+             'UNF:6:xTOjGElLnhT+htjRYrwHrw==', 
+             'UNF:6:z+91TcVJIrK9MqNfO/pbAQ==')
+
+        -> 'UNF:6:sPxO/826GsUCcXOWNc+Xpg=='
+
+    unsorted: ('UNF:6:sFUGRm2piAZ3HVfNg1RlLQ==', 
+               'UNF:6:xTOjGElLnhT+htjRYrwHrw==', 
+               'UNF:6:z+91TcVJIrK9MqNfO/pbAQ==', 
+               'UNF:6:Va00rfOLHEjde7b2enJzQw==')
+
+        -> 'UNF:6:vCqIYGEEKs8eFOi5EyLHag=='
+
+(2, 4)
+
+    sorted: ('UNF:6:RkP2XPeCClfWHDH1v83LGg==', 
+             'UNF:6:aWgJoh/Y7/Qo6uK9zs7ovQ==')
+
+        -> 'UNF:6:X6ZAvBZY2zpQOV/seLYcYg=='
+
+    unsorted: ('UNF:6:aWgJoh/Y7/Qo6uK9zs7ovQ==', 
+               'UNF:6:RkP2XPeCClfWHDH1v83LGg==')
+
+        -> 'UNF:6:1Qdono2iFAPISpXZl4pOIg=='
+
+(2, 2, 2)
+
+    sorted:
+
+        inner: ('UNF:6:sFUGRm2piAZ3HVfNg1RlLQ==', 
+                'UNF:6:xTOjGElLnhT+htjRYrwHrw==')
+
+            -> 'UNF:6:MAb1ovIVcL9irb4BO7c8SQ=='
+
+               ('UNF:6:Va00rfOLHEjde7b2enJzQw==', 
+                'UNF:6:z+91TcVJIrK9MqNfO/pbAQ==')
+
+            -> 'UNF:6:QWR9TqEOfnpOvRDB1KMpSQ=='
+
+        outer: ('UNF:6:MAb1ovIVcL9irb4BO7c8SQ==', 
+                'UNF:6:QWR9TqEOfnpOvRDB1KMpSQ==')
+
+            -> 'UNF:6:m4N25iu0dFUy9cUnx307Dg=='
+
+    unsorted:
+
+        inner: ('UNF:6:sFUGRm2piAZ3HVfNg1RlLQ==', 
+                'UNF:6:xTOjGElLnhT+htjRYrwHrw==')
+
+            -> 'UNF:6:MAb1ovIVcL9irb4BO7c8SQ=='
+
+               ('UNF:6:z+91TcVJIrK9MqNfO/pbAQ==', 
+                'UNF:6:Va00rfOLHEjde7b2enJzQw==')
+
+            -> 'UNF:6:Jwur8xSQIkrfo72zDBiRIw=='
+
+        outer: ('UNF:6:MAb1ovIVcL9irb4BO7c8SQ==', 
+                'UNF:6:Jwur8xSQIkrfo72zDBiRIw==')
+
+            -> 'UNF:6:WiQjZr8l5pFMM5jL//rPtw=='

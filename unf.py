@@ -12,9 +12,10 @@ class UNF:
 
     default_digits = 7
 
-    def __init__(self, data, digits=default_digits):
+    def __init__(self, data, digits=default_digits, sort_array=False):
         self.version = 6
         self.data = data
+        self.sort_array = sort_array
         if not isinstance(digits, int):
             raise TypeError('digits must be an integer')
         if digits < 1:
@@ -38,7 +39,11 @@ class UNF:
     def _normalize(self, data):
         if numpy and isinstance(data, numpy.ndarray):
             if data.ndim > 1:
-                unfs = [ UNF(el).formatted for el in data ]
+                unfs = [ UNF(el, sort_array=self.sort_array).formatted for el in data ]
+                if self.sort_array:
+                    print unfs
+                    unfs.sort()
+                    print unfs
                 return self._normalize(unfs)
             # is the array all numeric?  if so, try to speed up the 
             # calculations
