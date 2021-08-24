@@ -39,13 +39,12 @@ class UNF:
     def _normalize(self, data):
         if numpy and isinstance(data, numpy.ndarray):
             if data.ndim > 1:
-                unfs = [ UNF(el).formatted for el in data ]
-                return self._normalize(unfs)
+                raise ValueError('numpy arrays must be 1-D')
             # is the array all numeric?  if so, try to speed up the 
             # calculations
             if numpy.issubdtype(data.dtype, int) or \
                 numpy.issubdtype(data.dtype, float):
-                return self._normalize_ndarray(data)
+                return self._normalize_numpy_array(data)
             return b''.join([ self._normalize(el) for el in data ])
         if isinstance(data, (tuple, list)):
             return b''.join([ self._normalize_primitive(el) for el in data ])
@@ -116,7 +115,7 @@ class UNF:
             data = '{}{}.{}e{:+d}\n\0'.format(n_sign, i_part, f_part, exp)
         return data.encode()
 
-    def _normalize_ndarray(self, data):
+    def _normalize_numpy_array(self, data):
 
         """normalize a numpy array with only numeric values
 

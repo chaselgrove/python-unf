@@ -257,8 +257,7 @@ class TestNumpy(unittest.TestCase):
 
     def test_matrix(self):
         a = numpy.array(((1, 2, 3), (4, 5, 6)))
-        u = unf.UNF(a)
-        self.assertEqual(u.unf, 'FIW9D0mSBOYa5z0uzbtt2g==')
+        self.assertRaises(ValueError, unf.UNF, a)
         return
 
 # eof
