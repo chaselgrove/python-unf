@@ -20,7 +20,7 @@ check :
 	python3 setup.py check
 
 clean : 
-	rm -f MANIFEST *.pyc
+	rm -f MANIFEST __pycache__
 
 clobber : clean
 	rm -rf dist
