@@ -3,21 +3,21 @@
 default : build
 
 test : 
-	python -m unittest -vb tests
+	python3 -m unittest -vb tests
 
 build : dist/unf-0.5.1.tar.gz
 
 dist/unf-0.5.1.tar.gz : 
-	python setup.py sdist
+	python3 setup.py sdist
 
 register : 
-	python setup.py register
+	python3 setup.py register
 
 upload : 
-	python setup.py sdist upload
+	python3 setup.py sdist upload
 
 check : 
-	python setup.py check
+	python3 setup.py check
 
 clean : 
 	rm -f MANIFEST *.pyc

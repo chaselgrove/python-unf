@@ -2,6 +2,7 @@
 
 import hashlib
 import math
+import base64
 
 try:
     import numpy
@@ -24,12 +25,12 @@ class UNF:
         self._string = self._normalize(self.data)
         h = hashlib.sha256(self._string)
         self.hash = h.digest()
-        self.unf = self.hash[:16].encode('base64').rstrip('\n')
+        self.unf = base64.b64encode(self.hash[:16]).decode()
         if self.digits == self.default_digits:
-            self.formatted = 'UNF:%d:%s' % (self.version, self.unf)
+            self.formatted = 'UNF:{}:{}'.format(self.version, self.unf)
         else:
-            fmt = 'UNF:%d:N%d:%s'
-            self.formatted = fmt % (self.version, self.digits, self.unf)
+            fmt = 'UNF:{}:N{}:{}'
+            self.formatted = fmt.format(self.version, self.digits, self.unf)
         return
 
     def __str__(self):
@@ -45,9 +46,9 @@ class UNF:
             if numpy.issubdtype(data.dtype, int) or \
                 numpy.issubdtype(data.dtype, float):
                 return self._normalize_ndarray(data)
-            return ''.join([ self._normalize(el) for el in data ])
+            return b''.join([ self._normalize(el) for el in data ])
         if isinstance(data, (tuple, list)):
-            return ''.join([ self._normalize_primitive(el) for el in data ])
+            return b''.join([ self._normalize_primitive(el) for el in data ])
         return self._normalize_primitive(data)
 
     def _normalize_primitive(self, data):
@@ -55,17 +56,17 @@ class UNF:
             return self._normalize_none(data)
         if isinstance(data, bool):
             return self._normalize_boolean(data)
-        if isinstance(data, basestring):
-            return self._normalize_basestring(data)
-        if isinstance(data, (int, float, long)):
+        if isinstance(data, str):
+            return self._normalize_str(data)
+        if isinstance(data, (int, float)):
             return self._normalize_number(data)
         raise TypeError('unsupported type for data')
 
     def _normalize_none(self, data):
-        return '\0\0\0'
+        return b'\0\0\0'
 
-    def _normalize_basestring(self, data):
-        return data.encode('utf-8')[:self.characters] + '\n\0'
+    def _normalize_str(self, data):
+        return data.encode()[:self.characters] + b'\n\0'
 
     def _normalize_boolean(self, data):
         if data:
@@ -75,16 +76,16 @@ class UNF:
     def _normalize_number(self, data):
         data = float(data)
         if math.isnan(data):
-            return '+nan\n\0'
+            return b'+nan\n\0'
         if math.isinf(data):
             if data > 0:
-                return '+inf\n\0'
-            return '-inf\n\0'
+                return b'+inf\n\0'
+            return b'-inf\n\0'
         if data == 0.0:
             if math.copysign(1, data) > 0:
-                return '+0.e+\n\0'
+                return b'+0.e+\n\0'
             else:
-                return '-0.e+\n\0'
+                return b'-0.e+\n\0'
         return self._nn(data)
 
     def _nn(self, n):
@@ -110,8 +111,10 @@ class UNF:
         i_part = n_int_s[0]
         f_part = n_int_s[1:].rstrip('0')
         if exp == 0:
-            return '%s%s.%se+\n\0' % (n_sign, i_part, f_part)
-        return '%s%s.%se%+d\n\0' % (n_sign, i_part, f_part, exp)
+            data = '{}{}.{}e+\n\0'.format(n_sign, i_part, f_part)
+        else:
+            data = '{}{}.{}e{:+d}\n\0'.format(n_sign, i_part, f_part, exp)
+        return data.encode()
 
     def _normalize_ndarray(self, data):
 
@@ -147,12 +150,12 @@ class UNF:
         n_ipart = numpy.floor_divide(n_int, dpow).astype(str)
         n_fpart = n_int % dpow
         n_fpart = numpy.char.rstrip(n_fpart.astype(str), '0')
-        sign_arr = numpy.full(n_int.shape, '+', dtype='|S1')
+        sign_arr = numpy.full(n_int.shape, '+', dtype='U')
         sign_arr[signs < 0] = '-'
         exp_arr = exp.astype(str)
         exp_arr[exp == 0] = ''
         # minus signs will come from the exponent itself
-        exp_sign_arr = numpy.full(n_int.shape, '', dtype='|S1')
+        exp_sign_arr = numpy.full(n_int.shape, '', dtype='U')
         exp_sign_arr[exp >= 0] = '+'
         s = numpy.char.add(sign_arr, n_ipart)
         s = numpy.char.add(s, '.')
@@ -168,7 +171,8 @@ class UNF:
         s[numpy.logical_and(zero_inds, signs > 0)] = '+0.e+'
         s[numpy.logical_and(zero_inds, signs < 0)] = '-0.e+'
 
-        return '\n\0'.join(s) + '\n\0'
+        data = '\n\0'.join(s) + '\n\0'
+        return data.encode()
 
 def rint(n):
     """rounds n to the nearest integer, towards even if a tie"""
