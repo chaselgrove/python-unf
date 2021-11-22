@@ -1,5 +1,7 @@
 # See file COPYING distributed with unf for copyright and license.
 
+.PHONY : build
+
 default : build
 
 test : 
