@@ -9,7 +9,7 @@ build :
 	python3 -m build
 
 clean : 
-	rm -f __pycache__
+	rm -rf __pycache__ unf.egg-info
 
 clobber : clean
 	rm -rf dist
