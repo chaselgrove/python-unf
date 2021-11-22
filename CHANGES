@@ -36,3 +36,11 @@ https://github.com/chaselgrove/python-unf
 0.5.1 -- 21 April 2017
 
     Removed debugging print statement.
+
+0.6.0 -- 22 November 2021
+
+    Updated for Python 3.
+
+    Removed UNFs for multi-dimensional numpy arrays.
+
+    Updated build process.
