@@ -4,6 +4,8 @@ import hashlib
 import math
 import base64
 
+__version__ = '0.5.1'
+
 try:
     import numpy
 except ImportError:

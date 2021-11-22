@@ -5,22 +5,11 @@ default : build
 test : 
 	python3 -m unittest -vb tests
 
-build : dist/unf-0.6.0.tar.gz
-
-dist/unf-0.6.0.tar.gz : 
-	python3 setup.py sdist
-
-register : 
-	python3 setup.py register
-
-upload : 
-	python3 setup.py sdist upload
-
-check : 
-	python3 setup.py check
+build : 
+	python3 -m build
 
 clean : 
-	rm -f MANIFEST __pycache__
+	rm -f __pycache__
 
 clobber : clean
 	rm -rf dist
