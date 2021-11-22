@@ -10,6 +10,12 @@ test :
 build : 
 	python3 -m build
 
+upload : build
+	python3 -m twine upload dist/*
+
+upload-test : build
+	python3 -m twine upload --repository testpypi dist/*
+
 clean : 
 	rm -rf __pycache__ unf.egg-info
 
