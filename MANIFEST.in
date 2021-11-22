@@ -1,1 +1,1 @@
-include README.rounding COPYING CHANGES
+include README.rounding COPYING CHANGES tests.py
