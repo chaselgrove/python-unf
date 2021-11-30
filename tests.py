@@ -260,4 +260,16 @@ class TestNumpy(unittest.TestCase):
         self.assertRaises(ValueError, unf.UNF, a)
         return
 
+class TestConvenienceFunction(unittest.TestCase):
+
+    def test_defaults(self):
+        val = unf.unf(1.2345675)
+        self.assertEqual(val, 'UNF:6:vcKELUSS4s4k1snF4OTB9A==')
+        return
+
+    def test_digits(self):
+        val = unf.unf(1.2345675, digits=6)
+        self.assertEqual(val, 'UNF:6:N6:Z8pf0CubsQBVtRiOQLQNVA==')
+        return
+
 # eof

@@ -184,4 +184,7 @@ def rint(n):
         return n_int
     return int(round(n))
 
+def unf(obj, digits=UNF.default_digits):
+    return str(UNF(obj, digits=digits))
+
 # eof

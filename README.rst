@@ -13,5 +13,7 @@ Usage::
     >>> import unf
     >>> obj = 0.0
     >>> u = unf.UNF(obj)
-    >>> u.unf
-    'YUvj33xEHnzirIHQyZaHow=='
+    >>> str(u)
+    'UNF:6:YUvj33xEHnzirIHQyZaHow=='
+    >>> unf.unf(obj)
+    'UNF:6:YUvj33xEHnzirIHQyZaHow=='
