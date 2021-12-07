@@ -45,6 +45,10 @@ https://github.com/chaselgrove/python-unf
 
     Updated build process.
 
-0.7.0 -- 22 November 2021
+0.7.0 -- 7 December 2021
 
     Change API to use unf.unf() rather than a UNF class.
+
+0.7.1 -- 7 December 2021
+
+    Fixed date in CHANGES.
