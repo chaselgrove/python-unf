@@ -44,3 +44,7 @@ https://github.com/chaselgrove/python-unf
     Removed UNFs for multi-dimensional numpy arrays.
 
     Updated build process.
+
+0.7.0 -- 22 November 2021
+
+    Change API to use unf.unf() rather than a UNF class.
