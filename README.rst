@@ -11,9 +11,5 @@ mentioned in the UNF specification.
 Usage::
 
     >>> import unf
-    >>> obj = 0.0
-    >>> u = unf.UNF(obj)
-    >>> str(u)
-    'UNF:6:YUvj33xEHnzirIHQyZaHow=='
-    >>> unf.unf(obj)
+    >>> unf.unf(0.0)
     'UNF:6:YUvj33xEHnzirIHQyZaHow=='
