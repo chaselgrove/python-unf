@@ -17,7 +17,7 @@ upload-test : build
 	python3 -m twine upload --repository testpypi dist/*
 
 clean : 
-	rm -rf __pycache__ unf.egg-info
+	rm -rf __pycache__ unf.egg-info *.pyc
 
 clobber : clean
 	rm -rf dist
