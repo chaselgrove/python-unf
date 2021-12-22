@@ -128,6 +128,18 @@ class TestUNFs(unittest.TestCase):
         self.assertEqual(u, 'UNF:6:auhsR5DIScLiAUb/SA2YVA==')
         return
 
+    def test_value_10(self):
+        # see README.rounding; this tests _nn() scaling down
+        u = unf.unf(12345635)
+        self.assertEqual(u, 'UNF:6:qnKXlm182LZPFz9JzxTiNg==')
+        return
+
+    def test_value_11(self):
+        # see README.rounding; this tests _nn() scaling down
+        u = unf.unf(12345645)
+        self.assertEqual(u, 'UNF:6:qnKXlm182LZPFz9JzxTiNg==')
+        return
+
     def test_vector(self):
         u = unf.unf((1.23456789, None, 0))
         self.assertEqual(u, 'UNF:6:Do5dfAoOOFt4FSj0JcByEw==')
