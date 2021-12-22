@@ -65,24 +65,22 @@ def _normalize_number(data, digits):
     return _nn(data, digits)
 
 def _nn(n, digits):
-    """normalization for a non-special number
+    """Normalize a non-special number.
 
-    see README.rounding"""
+    To match the behavior of the R UNF package, we don't round the
+    original values but rather scale the value so all of the
+    significant digits are to the left of the decimal point, then
+    rounding to an integer, and then scaling back.
+
+    See README.rounding for more information.
+    """
     if n < 0:
         n_sign = '-'
         n = -n
     else:
         n_sign = '+'
-    l10 = math.log10(n)
-    exp = int(math.floor(l10))
-    e10 = digits - 1 - exp
-    # branch here to keep pow10 > 0 so exactly representable
-    if e10 > 0:
-        pow10 = math.pow(10, e10)
-        n_int = rint(n*pow10)
-    else:
-        pow10 = math.pow(10, -e10)
-        n_int = rint(n/pow10)
+    exp = int(math.floor(math.log10(n)))
+    n_int = rint(n * 10**(digits-1-exp))
     n_int_s = str(n_int)
     i_part = n_int_s[0]
     f_part = n_int_s[1:].rstrip('0')
@@ -110,16 +108,8 @@ def _normalize_numpy_array(data, digits):
     data_c[nan_inds | inf_inds | zero_inds] = 1.0
 
     # --- shift the decimal points and round
-    l10 = numpy.log10(data_c)
-    exp = numpy.floor(l10).astype(int)
-    e10 = digits - 1 - exp
-    pow10 = numpy.ndarray(e10.size, dtype=int)
-    n_int = numpy.ndarray(e10.size, dtype=float)
-    e10_pos_inds = e10 > 0
-    e10_npos_inds = e10 <= 0
-    n_int[e10_pos_inds] = data_c[e10_pos_inds] * 10**e10[e10_pos_inds]
-    n_int[e10_npos_inds] = data_c[e10_npos_inds] / 10**-e10[e10_npos_inds]
-    n_int = numpy.rint(n_int).astype(int)
+    exp = numpy.floor(numpy.log10(data_c)).astype(int)
+    n_int = numpy.rint(data_c * 10**(digits-1-exp)).astype(int)
 
     # --- generate normalization strings
     dpow = 10**(digits-1)
