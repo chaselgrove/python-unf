@@ -52,3 +52,13 @@ https://github.com/chaselgrove/python-unf
 0.7.1 -- 7 December 2021
 
     Fixed date in CHANGES.
+
+0.8.0 -- 22 December 2021
+
+    Fixed a bug in numpy array handling.
+
+    Simplified the numeric normalization code.
+
+    Added a test for scaling down before rounding.
+
+    Updated the rounding notes.
