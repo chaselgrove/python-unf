@@ -1,4 +1,4 @@
-# See file COPYING distributed with unf for copyright and license.
+# See file COPYING distributed with python-unf for copyright and license.
 
 import hashlib
 import math

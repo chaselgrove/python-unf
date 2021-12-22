@@ -1,4 +1,4 @@
-See file COPYING distributed with unf for copyright and license.
+See file COPYING distributed with python-unf for copyright and license.
 
 The UNF specification (as of Version 6 [1]) states that for numeric
 elements, we "round each vector element to N significant digits
