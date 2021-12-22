@@ -115,7 +115,9 @@ def _normalize_numpy_array(data, digits):
     dpow = 10**(digits-1)
     n_ipart = numpy.floor_divide(n_int, dpow).astype(str)
     n_fpart = n_int % dpow
-    n_fpart = numpy.char.rstrip(n_fpart.astype(str), '0')
+    n_fpart = n_fpart.astype(str)
+    n_fpart = numpy.char.rjust(n_fpart, digits-1, '0')
+    n_fpart = numpy.char.rstrip(n_fpart, '0')
     sign_arr = numpy.full(n_int.shape, '+', dtype='U')
     sign_arr[signs < 0] = '-'
     exp_arr = exp.astype(str)

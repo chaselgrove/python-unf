@@ -268,4 +268,19 @@ class TestNumpy(unittest.TestCase):
         self.assertRaises(ValueError, unf.unf, a)
         return
 
+@unittest.skipIf(not numpy, 'numpy not installed')
+class Test071Errors(unittest.TestCase):
+
+    """Versions through 0.7.1 have an error where scaled values
+    lose leading zeros after the decimal point.  So 0.9005000798402081
+    normalizes to b'+9.5001e-1\n' rather than the correct
+    b'+9.005001e-1\n'.  This only happens with values in numpy
+    arrays.
+    """
+
+    def test_value(self):
+        u = unf.unf(numpy.array([0.9005000798402081]))
+        self.assertEqual(u, 'UNF:6:8eqCT5VNEgqICh3FnZsImQ==')
+        return
+
 # eof
