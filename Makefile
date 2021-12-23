@@ -4,8 +4,11 @@
 
 default : build
 
-test : 
-	python3 -m unittest -vb tests
+test : build
+	tox -e py3
+
+test_all : build
+	tox
 
 build : 
 	python3 -m build
@@ -20,6 +23,6 @@ clean :
 	rm -rf __pycache__ unf.egg-info *.pyc
 
 clobber : clean
-	rm -rf dist
+	rm -rf dist .tox
 
 # eof
