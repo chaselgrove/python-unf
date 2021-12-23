@@ -4,7 +4,7 @@ import hashlib
 import math
 import base64
 
-__version__ = '0.8.0'
+__version__ = '0.9.0'
 
 try:
     import numpy

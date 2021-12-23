@@ -62,3 +62,9 @@ https://github.com/chaselgrove/python-unf
     Added a test for scaling down before rounding.
 
     Updated the rounding notes.
+
+0.9.0 -- 23 December 2021
+
+    Removed Python 3.6 support.
+
+    Using tox for testing.
