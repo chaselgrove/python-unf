@@ -1,13 +1,11 @@
-See file COPYING distributed with python-unf for copyright and license.
-
-The UNF specification (as of Version 6 [1]) states that for numeric
+The UNF specification (as of Version 6 ([1])) states that for numeric
 elements, we "round each vector element to N significant digits
 using the IEEE 754 'round towards nearest, ties to even' rounding
 mode."  The specification does not tell us if the rounding should
 be done on the exact value or the floating-point representation of
 the number.
 
-The examples provided with the specification [2] are no help in
+The examples provided with the specification ([2]) are no help in
 this respect.  The two high-precision values given, 1.2345675 and
 1.2345685, round trivially to 1.234568 because the floating-point
 representation of each is slightly closer than its exact value to
@@ -20,7 +18,7 @@ but the floating-point representations are slightly less than and
 slightly greater than the exact values, respectively, so they round
 to 1.234563 and 1.234565.
 
-However, both Dataverse itself and the R UNF package [3] process
+However, both Dataverse itself and the R UNF package ([3]) process
 these values as if they are exact, seeing a tie and rounding to the
 nearest even.
 
@@ -56,11 +54,11 @@ while round() appears to use the floating-point representation:
     > round(1.2345635, 6)
     [1] 1.234563
 
-This contradicts the assertion in the R documentation [4] that:
+This contradicts the assertion in the R documentation ([4]) that:
 
     signif(x, dig) is the same as round(x, dig - ceiling(log10(abs(x))))
 
-[1] https://guides.dataverse.org/en/latest/developers/unf/unf-v6.html
-[2] https://raw.githubusercontent.com/IQSS/UNF/master/doc/unf_examples.txt
-[3] https://cran.r-project.org/web/packages/UNF/index.html
-[4] https://stat.ethz.ch/R-manual/R-devel/library/base/html/Round.html
+[1]: https://guides.dataverse.org/en/latest/developers/unf/unf-v6.html
+[2]: https://raw.githubusercontent.com/IQSS/UNF/master/doc/unf_examples.txt
+[3]: https://cran.r-project.org/web/packages/UNF/index.html
+[4]: https://stat.ethz.ch/R-manual/R-devel/library/base/html/Round.html

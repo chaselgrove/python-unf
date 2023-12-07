@@ -1,8 +1,8 @@
-.. See file COPYING distributed with python-unf for copyright and license.
+# python-unf
 
 unf contains Python code for Universal Numeric Fingerprints (UNFs).
 
-http://guides.dataverse.org/en/latest/developers/unf/index.html
+UNFs are defined at http://guides.dataverse.org/en/latest/developers/unf/index.html.
 
 As of Version 0.6.0, N-dimensional numpy arrays are no longer
 supported.  This was an ad-hoc addition to this package that is not
