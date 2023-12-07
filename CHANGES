@@ -68,3 +68,9 @@ https://github.com/chaselgrove/python-unf
     Removed Python 3.6 support.
 
     Using tox for testing.
+
+0.10.0 -- 7 December 2023
+
+    Removed Python 3.7 support.
+
+    Added Python 3.11 and 3.12 to tests.
