@@ -2,14 +2,15 @@
 
 unf contains Python code for Universal Numeric Fingerprints (UNFs).
 
-UNFs are defined at http://guides.dataverse.org/en/latest/developers/unf/index.html.
+UNFs are defined at 
+http://guides.dataverse.org/en/latest/developers/unf/index.html.
 
-As of Version 0.6.0, N-dimensional numpy arrays are no longer
-supported.  This was an ad-hoc addition to this package that is not
-mentioned in the UNF specification.
-
-Usage::
+Usage:
 
     >>> import unf
-    >>> unf.unf(0.0)
-    'UNF:6:YUvj33xEHnzirIHQyZaHow=='
+    >>> unf.unf(1.23456789)
+    'UNF:6:vcKELUSS4s4k1snF4OTB9A=='
+    >>> unf.unf(1.23456789, digits=9)
+    'UNF:6:N9:IKw+l4ywdwsJeDze8dplJA=='
+
+Please see ROUNDING.md for a note about rounding.
