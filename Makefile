@@ -1,6 +1,6 @@
 # See file COPYING distributed with python-unf for copyright and license.
 
-.PHONY : build spell
+.PHONY : default test test_all build upload upload-test spell clean clobber
 
 default : build
 
