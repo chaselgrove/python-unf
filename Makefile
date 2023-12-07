@@ -1,6 +1,6 @@
 # See file COPYING distributed with python-unf for copyright and license.
 
-.PHONY : build
+.PHONY : build spell
 
 default : build
 
@@ -18,6 +18,9 @@ upload : build
 
 upload-test : build
 	python3 -m twine upload --repository testpypi dist/*
+
+spell : 
+	spell README.md ROUNDING.md CHANGES
 
 clean : 
 	rm -rf __pycache__ unf.egg-info *.pyc
