@@ -5,10 +5,10 @@
 default : build
 
 test : build
-	tox -e py3
+	tox -e py3 run
 
 test_all : build
-	tox
+	tox run
 
 build : 
 	python3 -m build
