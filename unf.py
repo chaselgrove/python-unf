@@ -109,7 +109,9 @@ def _normalize_numpy_array(data, digits):
 
     # --- shift the decimal points and round
     exp = numpy.floor(numpy.log10(data_c)).astype(int)
-    n_int = numpy.rint(data_c * 10**(digits-1-exp)).astype(int)
+    n_int = numpy.rint(
+        data_c * numpy.float_power(10, (digits-1-exp))
+    ).astype(int)
 
     # --- generate normalization strings
     dpow = 10**(digits-1)
