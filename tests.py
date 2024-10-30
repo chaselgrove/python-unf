@@ -2,7 +2,7 @@
 
 # See file COPYING distributed with python-unf for copyright and license.
 
-import unittest
+import unittest.mock
 import unf
 
 try:
@@ -246,6 +246,20 @@ class TestDigits(unittest.TestCase):
 @unittest.skipIf(not numpy, 'numpy not installed')
 class TestNumpy(unittest.TestCase):
 
+    def setUp(self):
+        super().setUp()
+        self._normalize_numpy_array = unf._normalize_numpy_array
+        unf._normalize_numpy_array = unittest.mock.Mock(
+            spec=self._normalize_numpy_array, 
+            side_effect=self._normalize_numpy_array
+        )
+        return
+
+    def tearDown(self):
+        super().tearDown()
+        unf._normalize_numpy_array = self._normalize_numpy_array
+        return
+
     def test(self):
         t = (None, True, 2, 3.4, '5.6.7')
         u_b = unf.unf(t)
@@ -260,6 +274,7 @@ class TestNumpy(unittest.TestCase):
              1.2345675, 1.2345685, 1.2345635, 1.2345645)
         u_b = unf.unf(t)
         u_n = unf.unf(numpy.array(t))
+        self.assertTrue(unf._normalize_numpy_array.called)
         self.assertEqual(u_n, u_b)
         return
 
@@ -268,18 +283,14 @@ class TestNumpy(unittest.TestCase):
         self.assertRaises(ValueError, unf.unf, a)
         return
 
-@unittest.skipIf(not numpy, 'numpy not installed')
-class Test071Errors(unittest.TestCase):
-
-    """Versions through 0.7.1 have an error where scaled values
-    lose leading zeros after the decimal point.  So 0.9005000798402081
-    normalizes to b'+9.5001e-1\n' rather than the correct
-    b'+9.005001e-1\n'.  This only happens with values in numpy
-    arrays.
-    """
-
-    def test_value(self):
+    # Versions through 0.7.1 have an error where scaled values
+    # lose leading zeros after the decimal point.  So 0.9005000798402081
+    # normalizes to b'+9.5001e-1\n' rather than the correct
+    # b'+9.005001e-1\n'.  This only happens with values in numpy
+    # arrays.
+    def test_0701_error(self):
         u = unf.unf(numpy.array([0.9005000798402081]))
+        self.assertTrue(unf._normalize_numpy_array.called)
         self.assertEqual(u, 'UNF:6:8eqCT5VNEgqICh3FnZsImQ==')
         return
 
