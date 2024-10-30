@@ -140,6 +140,18 @@ class TestUNFs(unittest.TestCase):
         self.assertEqual(u, 'UNF:6:qnKXlm182LZPFz9JzxTiNg==')
         return
 
+    def test_large_exponent(self):
+        # test a multi-digit exponent
+        u = unf.unf(1.234567e150)
+        self.assertEqual(u, 'UNF:6:qcKO4c5rvHfQ3nHzqrAS/Q==')
+        return
+
+    def test_tiny_exponent(self):
+        # test a multi-digit negative exponent
+        u = unf.unf(1.234567e-150)
+        self.assertEqual(u, 'UNF:6:vbTNUOoynDv6UKxOn36WeQ==')
+        return
+
     def test_vector(self):
         u = unf.unf((1.23456789, None, 0))
         self.assertEqual(u, 'UNF:6:Do5dfAoOOFt4FSj0JcByEw==')
@@ -261,6 +273,9 @@ class TestNumpy(unittest.TestCase):
         return
 
     def test(self):
+        # This is a heterogeneous array so we don't check that numpy 
+        # normalization is used, but we do still make sure that the 
+        # UNF of the numpy array is correct.
         t = (None, True, 2, 3.4, '5.6.7')
         u_b = unf.unf(t)
         u_n = unf.unf(numpy.array(t))
@@ -271,7 +286,8 @@ class TestNumpy(unittest.TestCase):
         t = (float('NaN'), float('+Inf'), float('-Inf'), 
              0.0, -0.0, 0, 1, -300, 
              3.1415, 0.00073, 
-             1.2345675, 1.2345685, 1.2345635, 1.2345645)
+             1.2345675, 1.2345685, 1.2345635, 1.2345645, 
+             1.234567e150, 1.234567e-150)
         u_b = unf.unf(t)
         u_n = unf.unf(numpy.array(t))
         self.assertTrue(unf._normalize_numpy_array.called)
