@@ -68,9 +68,9 @@ def _nn(n, digits):
     """Normalize a non-special number.
 
     To match the behavior of the R UNF package, we don't round the
-    original values but rather scale the value so all of the
+    original values but rather scale the values so all of the
     significant digits are to the left of the decimal point, then
-    rounding to an integer, and then scaling back.
+    round to integers, and then scale back.
 
     See README.rounding for more information.
     """
