@@ -109,40 +109,77 @@ def _normalize_numpy_array(data, digits):
 
     # --- shift the decimal points and round
     exp = numpy.floor(numpy.log10(data_c)).astype(int)
+    # These values shouldn't be possible since we check for data subtypes 
+    # of int or float before we use this function.  We therefore can't 
+    # test this without calling this function directly.  But we leave 
+    # this in place for unanticipated paths to get here.
+    if (exp > 999).any():
+        raise ValueError('value overflow (exponent too large)')
+    if (exp < -999).any():
+        raise ValueError('value underflow (exponent too small)')
     n_int = numpy.rint(
         data_c * numpy.float_power(10, (digits-1-exp))
     ).astype(int)
 
     # --- generate normalization strings
+
+    s = numpy.full(n_int.shape, '+', dtype='S{}'.format(digits+7))
+    s[signs < 0] = b'-'
+
     dpow = 10**(digits-1)
-    n_ipart = numpy.floor_divide(n_int, dpow).astype(str)
+    n_ipart = numpy.floor_divide(n_int, dpow)
     n_fpart = n_int % dpow
-    n_fpart = n_fpart.astype(str)
-    n_fpart = numpy.char.rjust(n_fpart, digits-1, '0')
-    n_fpart = numpy.char.rstrip(n_fpart, '0')
-    sign_arr = numpy.full(n_int.shape, '+', dtype='U')
-    sign_arr[signs < 0] = '-'
-    exp_arr = exp.astype(str)
-    exp_arr[exp == 0] = ''
+
+    n_ipart = n_ipart.astype('uint8') + 48
+    n_ipart.dtype = 'S1'
+
+    s += n_ipart + b'.'
+
+    n_fpart_s = numpy.empty((digits-1, n_fpart.size), dtype='uint8')
+    for i in range(digits-1):
+        n_fpart_s[i,:] = n_fpart % 10
+        n_fpart //= 10
+    n_fpart_s += 48
+    n_fpart_s.dtype = 'S1'
+    remove = numpy.full(n_fpart.size, True)
+    for i in range(digits-1):
+        remove &= n_fpart_s[i,:] == b'0'
+        n_fpart_s[i,remove] = b''
+    for i in range(digits-2, -1, -1):
+        s += n_fpart_s[i,]
+
     # minus signs will come from the exponent itself
-    exp_sign_arr = numpy.full(n_int.shape, '', dtype='U')
-    exp_sign_arr[exp >= 0] = '+'
-    s = numpy.char.add(sign_arr, n_ipart)
-    s = numpy.char.add(s, '.')
-    s = numpy.char.add(s, n_fpart)
-    s = numpy.char.add(s, 'e')
-    s = numpy.char.add(s, exp_sign_arr)
-    s = numpy.char.add(s, exp_arr)
+    exp_sign_arr = numpy.full(n_int.shape, '+', dtype='S1')
+    exp_sign_arr[exp < 0] = b'-'
+    exp = numpy.abs(exp)
+
+    s += b'e' + exp_sign_arr
+
+    # TODO check exp range
+    exp_s = numpy.empty((3, exp.size), dtype='uint8')
+
+    for i in range(3):
+        exp_s[i,:] = exp % 10
+        exp //= 10
+    exp_s += 48
+    exp_s.dtype = 'S1'
+    remove = numpy.full(exp.size, True)
+    for i in range(2, -1, -1):
+        remove &= exp_s[i,:] == b'0'
+        exp_s[i,remove] = b''
+
+    s += exp_s[2,:]+exp_s[1,:]+exp_s[0,:]
 
     # --- set normalization strings for special values
-    s[nan_inds] = '+nan'
-    s[numpy.logical_and(inf_inds, signs > 0)] = '+inf'
-    s[numpy.logical_and(inf_inds, signs < 0)] = '-inf'
-    s[numpy.logical_and(zero_inds, signs > 0)] = '+0.e+'
-    s[numpy.logical_and(zero_inds, signs < 0)] = '-0.e+'
+    s[nan_inds] = b'+nan'
+    s[numpy.logical_and(inf_inds, signs > 0)] = b'+inf'
+    s[numpy.logical_and(inf_inds, signs < 0)] = b'-inf'
+    s[numpy.logical_and(zero_inds, signs > 0)] = b'+0.e+'
+    s[numpy.logical_and(zero_inds, signs < 0)] = b'-0.e+'
 
-    data = '\n\0'.join(s) + '\n\0'
-    return data.encode()
+    data = b'\n\0'.join(s) + b'\n\0'
+
+    return data
 
 def rint(n):
     """rounds n to the nearest integer, towards even if a tie"""
