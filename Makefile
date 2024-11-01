@@ -1,6 +1,6 @@
 # See file COPYING distributed with python-unf for copyright and license.
 
-.PHONY : default test test_all build upload upload-test spell clean clobber
+.PHONY : default test test_all test_local build upload upload-test spell clean clobber
 
 default : build
 
@@ -9,6 +9,9 @@ test : build
 
 test_all : build
 	tox run
+
+test_local : 
+	python3 -m unittest -vb tests
 
 build : 
 	python3 -m build
