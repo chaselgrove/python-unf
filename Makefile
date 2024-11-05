@@ -5,7 +5,7 @@
 default : build
 
 test : build
-	tox -e py3 run
+	tox -e py3,no-optional-packages run
 
 test_all : build
 	tox run
