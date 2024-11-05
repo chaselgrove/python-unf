@@ -26,7 +26,7 @@ spell :
 	spell README.md ROUNDING.md CHANGES
 
 clean : 
-	rm -rf __pycache__ unf.egg-info *.pyc
+	rm -rf __pycache__ unf/__pycache__ unf.egg-info *.pyc
 
 clobber : clean
 	rm -rf dist .tox
