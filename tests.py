@@ -258,10 +258,13 @@ class TestDigits(unittest.TestCase):
 @unittest.skipIf(not numpy, 'numpy not installed')
 class TestNumpy(unittest.TestCase):
 
+    def test_attr(self):
+        pass
+
     def setUp(self):
         super().setUp()
-        self._normalize_numpy_array = unf._normalize_numpy_array
-        unf._normalize_numpy_array = unittest.mock.Mock(
+        self._normalize_numpy_array = unf._base._normalize_numpy_array
+        unf._base._normalize_numpy_array = unittest.mock.Mock(
             spec=self._normalize_numpy_array, 
             side_effect=self._normalize_numpy_array
         )
@@ -269,7 +272,7 @@ class TestNumpy(unittest.TestCase):
 
     def tearDown(self):
         super().tearDown()
-        unf._normalize_numpy_array = self._normalize_numpy_array
+        unf._base._normalize_numpy_array = self._normalize_numpy_array
         return
 
     def test(self):
@@ -290,7 +293,7 @@ class TestNumpy(unittest.TestCase):
              1.234567e150, 1.234567e-150)
         u_b = unf.unf(t)
         u_n = unf.unf(numpy.array(t))
-        self.assertTrue(unf._normalize_numpy_array.called)
+        self.assertTrue(unf._base._normalize_numpy_array.called)
         self.assertEqual(u_n, u_b)
         return
 
@@ -306,7 +309,7 @@ class TestNumpy(unittest.TestCase):
     # arrays.
     def test_0701_error(self):
         u = unf.unf(numpy.array([0.9005000798402081]))
-        self.assertTrue(unf._normalize_numpy_array.called)
+        self.assertTrue(unf._base._normalize_numpy_array.called)
         self.assertEqual(u, 'UNF:6:8eqCT5VNEgqICh3FnZsImQ==')
         return
 
