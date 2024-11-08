@@ -19,12 +19,10 @@ def normalize(data, digits=default_digits):
     if numpy and isinstance(data, numpy.ndarray):
         if data.ndim > 1:
             raise ValueError('numpy arrays must be 1-D')
-        # is the array all numeric?  if so, try to speed up the 
-        # calculations
-        if numpy.issubdtype(data.dtype, int) or \
-            numpy.issubdtype(data.dtype, float):
-            return _normalize_numpy_array(data, digits)
-        return b''.join([ normalize(el, digits) for el in data ])
+        if not numpy.issubdtype(data.dtype, int) and \
+                not numpy.issubdtype(data.dtype, float):
+            raise ValueError('unsupported numpy array data type')
+        return _normalize_numpy_array(data, digits)
     if isinstance(data, (tuple, list)):
         return b''.join([ _normalize_primitive(el, digits) for el in data ])
     return _normalize_primitive(data, digits)

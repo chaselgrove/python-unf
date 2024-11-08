@@ -516,14 +516,9 @@ class TestNumpy(unittest.TestCase):
         unf._base._normalize_numpy_array = self._normalize_numpy_array
         return
 
-    def test(self):
-        # This is a heterogeneous array so we don't check that numpy 
-        # normalization is used, but we do still make sure that the 
-        # UNF of the numpy array is correct.
-        t = (None, True, 2, 3.4, '5.6.7')
-        u_b = unf.unf(t)
-        u_n = unf.unf(numpy.array(t))
-        self.assertEqual(u_n, u_b)
+    def test_heterogeneous(self):
+        with self.assertRaises(ValueError):
+            unf.unf(numpy.array([None, True, 2, 3.4, '5.6.7']))
         return
 
     def test_speed(self):
