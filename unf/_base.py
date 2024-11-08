@@ -84,7 +84,7 @@ def _nn(n, digits):
     else:
         n_sign = '+'
     exp = int(math.floor(math.log10(n)))
-    n_int = rint(n * 10**(digits-1-exp))
+    n_int = _rint(n * 10**(digits-1-exp))
     n_int_s = str(n_int)
     i_part = n_int_s[0]
     f_part = n_int_s[1:].rstrip('0')
@@ -94,7 +94,7 @@ def _nn(n, digits):
         data = '{}{}.{}e{:+d}\n\0'.format(n_sign, i_part, f_part, exp)
     return data.encode()
 
-def rint(n):
+def _rint(n):
     """rounds n to the nearest integer, towards even if a tie"""
     n_int = int(math.floor(n))
     if n == n_int + 0.5:

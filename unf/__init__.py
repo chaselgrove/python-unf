@@ -5,7 +5,6 @@ from ._base import (
     version, 
     default_digits, 
     characters, 
-    rint, 
     normalize, 
     unf
 )
