@@ -502,9 +502,6 @@ class TestNormalizeDigits(unittest.TestCase):
 @unittest.skipIf(not numpy, 'numpy not installed')
 class TestNumpy(unittest.TestCase):
 
-    def test_attr(self):
-        pass
-
     def setUp(self):
         super().setUp()
         self._normalize_numpy_array = unf._base._normalize_numpy_array
