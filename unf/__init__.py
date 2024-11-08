@@ -4,9 +4,6 @@ __version__ = '0.10.0'
 
 from ._constants import *
 from ._base import (
-    version, 
-    default_digits, 
-    characters, 
     normalize, 
     unf
 )
