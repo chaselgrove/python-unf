@@ -255,6 +255,250 @@ class TestDigits(unittest.TestCase):
         self.assertEqual(u, 'UNF:6:N9:TCfkDjJvqAJ7wy4sdQFRaw==')
         return
 
+class TestNormalize(unittest.TestCase):
+
+    # These tests match those for unf() above.
+
+    def test_missing(self):
+        s = unf.normalize(None)
+        self.assertEqual(s, b'\x00\x00\x00')
+        return
+
+    def test_true(self):
+        s1 = unf.normalize(True)
+        s2 = unf.normalize(1)
+        self.assertEqual(s1, b'+1.e+\n\x00')
+        self.assertEqual(s1, s2)
+        return
+
+    def test_false(self):
+        s1 = unf.normalize(False)
+        s2 = unf.normalize(0)
+        self.assertEqual(s1, b'+0.e+\n\x00')
+        self.assertEqual(s1, s2)
+        return
+
+    def test_string(self):
+        s = unf.normalize('A character String')
+        self.assertEqual(s, b'A character String\n\x00')
+        return
+
+    def test_long_string(self):
+        s = unf.normalize('A quite long character string, so long that the ' + \
+                    'number of characters in it happens to be more ' + \
+                    'than the default cutoff limit of 128.')
+        self.assertEqual(s, b'A quite long character string, so long that the number of characters in it happens to be more than the default cutoff limit of 1\n\x00')
+        return
+
+    def test_unicode(self):
+        s = unf.normalize(u'på Færøerne')
+        self.assertEqual(s, b'p\xc3\xa5 F\xc3\xa6r\xc3\xb8erne\n\x00')
+        return
+
+    def test_empty_string(self):
+        s = unf.normalize('')
+        self.assertEqual(s, b'\n\x00')
+        return
+
+    def test_nan(self):
+        s = unf.normalize(float('NaN'))
+        self.assertEqual(s, b'+nan\n\x00')
+        return
+
+    def test_pos_inf(self):
+        s = unf.normalize(float('+Inf'))
+        self.assertEqual(s, b'+inf\n\x00')
+        return
+
+    def test_neg_inf(self):
+        s = unf.normalize(float('-Inf'))
+        self.assertEqual(s, b'-inf\n\x00')
+        return
+
+    def test_pos_zero(self):
+        s = unf.normalize(0.0)
+        self.assertEqual(s, b'+0.e+\n\x00')
+        return
+
+    def test_neg_zero(self):
+        s = unf.normalize(-0.0)
+        self.assertEqual(s, b'-0.e+\n\x00')
+        return
+
+    def test_value_1(self):
+        s = unf.normalize(0)
+        self.assertEqual(s, b'+0.e+\n\x00')
+        return
+
+    def test_value_2(self):
+        s = unf.normalize(1)
+        self.assertEqual(s, b'+1.e+\n\x00')
+        return
+
+    def test_value_3(self):
+        s = unf.normalize(-300)
+        self.assertEqual(s, b'-3.e+2\n\x00')
+        return
+
+    def test_value_4(self):
+        s = unf.normalize(3.1415)
+        self.assertEqual(s, b'+3.1415e+\n\x00')
+        return
+
+    def test_value_5(self):
+        s = unf.normalize(0.00073)
+        self.assertEqual(s, b'+7.3e-4\n\x00')
+        return
+
+    def test_value_6(self):
+        s = unf.normalize(1.2345675)
+        self.assertEqual(s, b'+1.234568e+\n\x00')
+        return
+
+    def test_value_7(self):
+        s = unf.normalize(1.2345685)
+        self.assertEqual(s, b'+1.234568e+\n\x00')
+        return
+
+    def test_value_8(self):
+        # see README.rounding
+        s = unf.normalize(1.2345635)
+        self.assertEqual(s, b'+1.234564e+\n\x00')
+        return
+
+    def test_value_9(self):
+        # see README.rounding
+        s = unf.normalize(1.2345645)
+        self.assertEqual(s, b'+1.234564e+\n\x00')
+        return
+
+    def test_value_10(self):
+        # see README.rounding; this tests _nn() scaling down
+        s = unf.normalize(12345635)
+        self.assertEqual(s, b'+1.234564e+7\n\x00')
+        return
+
+    def test_value_11(self):
+        # see README.rounding; this tests _nn() scaling down
+        s = unf.normalize(12345645)
+        self.assertEqual(s, b'+1.234564e+7\n\x00')
+        return
+
+    def test_large_exponent(self):
+        # test a multi-digit exponent
+        s = unf.normalize(1.234567e150)
+        self.assertEqual(s, b'+1.234567e+150\n\x00')
+        return
+
+    def test_tiny_exponent(self):
+        # test a multi-digit negative exponent
+        s = unf.normalize(1.234567e-150)
+        self.assertEqual(s, b'+1.234567e-150\n\x00')
+        return
+
+    def test_vector(self):
+        s = unf.normalize((1.23456789, None, 0))
+        self.assertEqual(s, b'+1.234568e+\n\x00\x00\x00\x00+0.e+\n\x00')
+        return
+
+    def test_vector_2(self):
+        s = unf.normalize([1.23456789, None, 0])
+        self.assertEqual(s, b'+1.234568e+\n\x00\x00\x00\x00+0.e+\n\x00')
+        return
+
+    def test_vector_3(self):
+        with self.assertRaises(TypeError):
+            unf.normalize([1, [1.23456789, None, 0]])
+        return
+
+class TestNormalizeDigits(unittest.TestCase):
+
+    # ---------------------------------------------------------
+    # type and value checking
+
+    def test_type(self):
+        with self.assertRaises(TypeError):
+            unf.normalize('', digits='')
+        return
+
+    def test_value(self):
+        with self.assertRaises(ValueError):
+            unf.normalize('', digits=0)
+        return
+
+    # ---------------------------------------------------------
+    # the following should be unaffected by digits=2
+
+    def test_missing(self):
+        s = unf.normalize(None, digits=2)
+        self.assertEqual(s, b'\x00\x00\x00')
+        return
+
+    def test_string(self):
+        s = unf.normalize('A character String', digits=2)
+        self.assertEqual(s, b'A character String\n\x00')
+        return
+
+    def test_nan(self):
+        s = unf.normalize(float('NaN'), digits=2)
+        self.assertEqual(s, b'+nan\n\x00')
+        return
+
+    def test_pos_inf(self):
+        s = unf.normalize(float('+Inf'), digits=2)
+        self.assertEqual(s, b'+inf\n\x00')
+        return
+
+    def test_neg_inf(self):
+        s = unf.normalize(float('-Inf'), digits=2)
+        self.assertEqual(s, b'-inf\n\x00')
+        return
+
+    def test_pos_zero(self):
+        s = unf.normalize(0.0, digits=2)
+        self.assertEqual(s, b'+0.e+\n\x00')
+        return
+
+    def test_neg_zero(self):
+        s = unf.normalize(-0.0, digits=2)
+        self.assertEqual(s, b'-0.e+\n\x00')
+        return
+
+    def test_value_1(self):
+        s = unf.normalize(0, digits=2)
+        self.assertEqual(s, b'+0.e+\n\x00')
+        return
+
+    def test_value_2(self):
+        s = unf.normalize(1, digits=2)
+        self.assertEqual(s, b'+1.e+\n\x00')
+        return
+
+    # ---------------------------------------------------------
+    # value tests, including header checks
+
+    def test_value_3(self):
+        s = unf.normalize(1.2345678, digits=6)
+        self.assertEqual(s, b'+1.23457e+\n\x00')
+        return
+
+    def test_value_4(self):
+        # no N in UNF header (default digits)
+        s = unf.normalize(1.2345678, digits=7)
+        self.assertEqual(s, b'+1.234568e+\n\x00')
+        return
+
+    def test_value_5(self):
+        s = unf.normalize(1.2345678, digits=8)
+        self.assertEqual(s, b'+1.2345678e+\n\x00')
+        return
+
+    def test_value_6(self):
+        # same as digits=8 (we've run out of siginficant digits in the data)
+        s = unf.normalize(1.2345678, digits=9)
+        self.assertEqual(s, b'+1.2345678e+\n\x00')
+        return
+
 @unittest.skipIf(not numpy, 'numpy not installed')
 class TestNumpy(unittest.TestCase):
 

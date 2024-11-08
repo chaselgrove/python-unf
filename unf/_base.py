@@ -15,7 +15,11 @@ version = 6
 default_digits = 7
 characters = 128
 
-def _normalize(data, digits):
+def normalize(data, digits=default_digits):
+    if not isinstance(digits, int):
+        raise TypeError('digits must be an integer')
+    if digits < 1:
+        raise ValueError('digits must be positive')
     if numpy and isinstance(data, numpy.ndarray):
         if data.ndim > 1:
             raise ValueError('numpy arrays must be 1-D')
@@ -24,7 +28,7 @@ def _normalize(data, digits):
         if numpy.issubdtype(data.dtype, int) or \
             numpy.issubdtype(data.dtype, float):
             return _normalize_numpy_array(data, digits)
-        return b''.join([ _normalize(el, digits) for el in data ])
+        return b''.join([ normalize(el, digits) for el in data ])
     if isinstance(data, (tuple, list)):
         return b''.join([ _normalize_primitive(el, digits) for el in data ])
     return _normalize_primitive(data, digits)
@@ -100,11 +104,7 @@ def rint(n):
     return int(round(n))
 
 def unf(obj, digits=default_digits):
-    if not isinstance(digits, int):
-        raise TypeError('digits must be an integer')
-    if digits < 1:
-        raise ValueError('digits must be positive')
-    string = _normalize(obj, digits)
+    string = normalize(obj, digits)
     hash = hashlib.sha256(string).digest()
     encoded_hash = base64.b64encode(hash[:16]).decode()
     if digits == default_digits:
