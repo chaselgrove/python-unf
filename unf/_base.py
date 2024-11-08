@@ -4,16 +4,15 @@ import hashlib
 import math
 import base64
 
+try:
+    import numpy
+except ImportError:
+    numpy = None
+
+from ._constants import *
 from ._numpy import (
-    numpy, 
     _normalize_numpy_array
 )
-
-__version__ = '0.10.0'
-
-version = 6
-default_digits = 7
-characters = 128
 
 def normalize(data, digits=default_digits):
     if not isinstance(digits, int):

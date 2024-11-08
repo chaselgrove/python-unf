@@ -1,17 +1,24 @@
 # See file COPYING distributed with python-unf for copyright and license.
 
-try:
+from ._constants import *
+
+def numpy_normalize_each(data, digits=default_digits):
+
+    """Normalize values in a numpy array."""
+
+    # We do this here to raise ImportError at the time this is called if 
+    # numpy is not available.
     import numpy
-except ImportError:
-    numpy = None
 
-def _normalize_numpy_array(data, digits):
+    if not isinstance(data, numpy.ndarray):
+        raise TypeError('data must be a numpy array')
 
-    """normalize a numpy array with only numeric values
+    if data.ndim == 0:
+        raise ValueError('ndim must be greater than zero')
 
-    this is meant to increase speed over calling _normalize_number() 
-    for each element
-    """
+    if not numpy.issubdtype(data.dtype, int) \
+            and not numpy.issubdtype(data.dtype, float):
+        raise TypeError('data type must be integer or floating point')
 
     # --- find special values and record signs, make all values positive, 
     # --- then replace special values with dummy numbers
@@ -50,13 +57,13 @@ def _normalize_numpy_array(data, digits):
 
     s += n_ipart + b'.'
 
-    n_fpart_s = numpy.empty((digits-1, n_fpart.size), dtype='uint8')
+    n_fpart_s = numpy.empty((digits-1, *n_fpart.shape), dtype='uint8')
     for i in range(digits-1):
         n_fpart_s[i,:] = n_fpart % 10
         n_fpart //= 10
     n_fpart_s += 48
     n_fpart_s.dtype = 'S1'
-    remove = numpy.full(n_fpart.size, True)
+    remove = numpy.full(n_fpart.shape, True)
     for i in range(digits-1):
         remove &= n_fpart_s[i,:] == b'0'
         n_fpart_s[i,remove] = b''
@@ -71,14 +78,14 @@ def _normalize_numpy_array(data, digits):
     s += b'e' + exp_sign_arr
 
     # TODO check exp range
-    exp_s = numpy.empty((3, exp.size), dtype='uint8')
+    exp_s = numpy.empty((3, *exp.shape), dtype='uint8')
 
     for i in range(3):
         exp_s[i,:] = exp % 10
         exp //= 10
     exp_s += 48
     exp_s.dtype = 'S1'
-    remove = numpy.full(exp.size, True)
+    remove = numpy.full(exp.shape, True)
     for i in range(2, -1, -1):
         remove &= exp_s[i,:] == b'0'
         exp_s[i,remove] = b''
@@ -92,7 +99,17 @@ def _normalize_numpy_array(data, digits):
     s[numpy.logical_and(zero_inds, signs > 0)] = b'+0.e+'
     s[numpy.logical_and(zero_inds, signs < 0)] = b'-0.e+'
 
-    data = b'\n\0'.join(s) + b'\n\0'
+    return s
+
+def _normalize_numpy_array(data, digits):
+
+    """normalize a numpy array with only numeric values
+
+    this is meant to increase speed over calling _normalize_number() 
+    for each element
+    """
+
+    data = b'\n\0'.join(numpy_normalize_each(data, digits)) + b'\n\0'
 
     return data
 
