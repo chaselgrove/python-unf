@@ -5,14 +5,11 @@ import math
 import base64
 
 try:
-    import numpy
+    from .numpy import _normalize_numpy_array, numpy
 except ImportError:
     numpy = None
 
 from ._constants import *
-from .numpy import (
-    _normalize_numpy_array
-)
 
 def normalize(data, digits=default_digits):
     if not isinstance(digits, int):

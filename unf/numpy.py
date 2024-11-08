@@ -1,14 +1,12 @@
 # See file COPYING distributed with python-unf for copyright and license.
 
+import numpy
+
 from ._constants import *
 
 def normalize_each(data, digits=default_digits):
 
     """Normalize values in a numpy array."""
-
-    # We do this here to raise ImportError at the time this is called if 
-    # numpy is not available.
-    import numpy
 
     if not isinstance(data, numpy.ndarray):
         raise TypeError('data must be a numpy array')

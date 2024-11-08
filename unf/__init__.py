@@ -7,6 +7,5 @@ from ._base import (
     normalize, 
     unf
 )
-from . import numpy
 
 # eof

@@ -648,7 +648,7 @@ class TestNotNumpyNormalizeEach(unittest.TestCase):
 
     def test(self):
         with self.assertRaises(ImportError):
-            unf.numpy.normalize_each(None)
+            import unf.numpy
         return
 
 @unittest.skipIf(not numpy, 'numpy not installed')
