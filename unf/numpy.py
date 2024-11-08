@@ -99,16 +99,17 @@ def normalize_each(data, digits=default_digits):
 
     return s
 
-def _normalize_numpy_array(data, digits):
+def normalize(data, digits):
+    """Normalize a numpy array.
 
-    """normalize a numpy array with only numeric values
-
-    this is meant to increase speed over calling _normalize_number() 
-    for each element
+    The array must have a numeric data type.
     """
-
+    if data.ndim > 1:
+        raise ValueError('numpy arrays must be 1-D')
+    if not numpy.issubdtype(data.dtype, int) and \
+            not numpy.issubdtype(data.dtype, float):
+        raise ValueError('unsupported numpy array data type')
     data = b'\n\0'.join(normalize_each(data, digits)) + b'\n\0'
-
     return data
 
 # eof

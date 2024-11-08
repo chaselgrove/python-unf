@@ -5,7 +5,7 @@ import math
 import base64
 
 try:
-    from .numpy import _normalize_numpy_array, numpy
+    from . import numpy
 except ImportError:
     numpy = None
 
@@ -16,13 +16,8 @@ def normalize(data, digits=default_digits):
         raise TypeError('digits must be an integer')
     if digits < 1:
         raise ValueError('digits must be positive')
-    if numpy and isinstance(data, numpy.ndarray):
-        if data.ndim > 1:
-            raise ValueError('numpy arrays must be 1-D')
-        if not numpy.issubdtype(data.dtype, int) and \
-                not numpy.issubdtype(data.dtype, float):
-            raise ValueError('unsupported numpy array data type')
-        return _normalize_numpy_array(data, digits)
+    if numpy and isinstance(data, numpy.numpy.ndarray):
+        return numpy.normalize(data, digits)
     if isinstance(data, (tuple, list)):
         return b''.join([ _normalize_primitive(el, digits) for el in data ])
     return _normalize_primitive(data, digits)
