@@ -651,7 +651,7 @@ class TestNotNumpyNormalizeEach(unittest.TestCase):
 
     def test(self):
         with self.assertRaises(ImportError):
-            unf.numpy_normalize_each(None)
+            unf.numpy.normalize_each(None)
         return
 
 @unittest.skipIf(not numpy, 'numpy not installed')
@@ -659,63 +659,63 @@ class TestNumpyNormalizeEach(unittest.TestCase):
 
     def test_digits_type(self):
         with self.assertRaises(TypeError):
-            unf.numpy_normalize_each(numpy.array([1]), digits='')
+            unf.numpy.normalize_each(numpy.array([1]), digits='')
         return
 
     def test_digits_value(self):
         with self.assertRaises(ValueError):
-            unf.numpy_normalize_each(numpy.array([1]), digits=0)
+            unf.numpy.normalize_each(numpy.array([1]), digits=0)
         return
 
     def test_type_1(self):
         with self.assertRaises(TypeError):
-            unf.numpy_normalize_each(None)
+            unf.numpy.normalize_each(None)
         return
 
     def test_type_2(self):
         with self.assertRaises(TypeError):
-            unf.numpy_normalize_each(1)
+            unf.numpy.normalize_each(1)
         return
 
     def test_type_3(self):
         with self.assertRaises(TypeError):
-            unf.numpy_normalize_each(1.5)
+            unf.numpy.normalize_each(1.5)
         return
 
     def test_type_4(self):
         with self.assertRaises(TypeError):
-            unf.numpy_normalize_each([])
+            unf.numpy.normalize_each([])
         return
 
     def test_type_5(self):
         with self.assertRaises(TypeError):
-            unf.numpy_normalize_each('')
+            unf.numpy.normalize_each('')
         return
 
     def test_type_6(self):
         with self.assertRaises(TypeError):
-            unf.numpy_normalize_each(numpy.zeros((1, ), dtype='float128'))
+            unf.numpy.normalize_each(numpy.zeros((1, ), dtype='float128'))
         return
 
     def test_ndim(self):
         with self.assertRaises(ValueError):
-            unf.numpy_normalize_each(numpy.array(1))
+            unf.numpy.normalize_each(numpy.array(1))
         return
 
     def test_shape_1(self):
-        arr = unf.numpy_normalize_each(numpy.array([1]))
+        arr = unf.numpy.normalize_each(numpy.array([1]))
         self.assertIsInstance(arr, numpy.ndarray)
         self.assertEqual(arr.shape, (1, ))
         return
 
     def test_shape_2(self):
-        arr = unf.numpy_normalize_each(numpy.zeros((2, 3)))
+        arr = unf.numpy.normalize_each(numpy.zeros((2, 3)))
         self.assertIsInstance(arr, numpy.ndarray)
         self.assertEqual(arr.shape, (2, 3))
         return
 
     def test_shape_3(self):
-        arr = unf.numpy_normalize_each(numpy.zeros((2, 3, 4)))
+        arr = unf.numpy.normalize_each(numpy.zeros((2, 3, 4)))
         self.assertIsInstance(arr, numpy.ndarray)
         self.assertEqual(arr.shape, (2, 3, 4))
         return

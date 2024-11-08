@@ -2,7 +2,7 @@
 
 from ._constants import *
 
-def numpy_normalize_each(data, digits=default_digits):
+def normalize_each(data, digits=default_digits):
 
     """Normalize values in a numpy array."""
 
@@ -109,7 +109,7 @@ def _normalize_numpy_array(data, digits):
     for each element
     """
 
-    data = b'\n\0'.join(numpy_normalize_each(data, digits)) + b'\n\0'
+    data = b'\n\0'.join(normalize_each(data, digits)) + b'\n\0'
 
     return data
 

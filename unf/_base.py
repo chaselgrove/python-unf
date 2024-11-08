@@ -10,7 +10,7 @@ except ImportError:
     numpy = None
 
 from ._constants import *
-from ._numpy import (
+from .numpy import (
     _normalize_numpy_array
 )
 

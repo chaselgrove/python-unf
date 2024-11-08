@@ -10,6 +10,6 @@ from ._base import (
     normalize, 
     unf
 )
-from ._numpy import numpy_normalize_each
+from . import numpy
 
 # eof
