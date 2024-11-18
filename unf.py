@@ -18,15 +18,18 @@ characters = 128
 # --- public functions --------------------------------------------------
 
 def unf(obj, digits=default_digits):
-    string = normalize(obj, digits)
-    hash = hashlib.sha256(string).digest()
-    encoded_hash = base64.b64encode(hash[:16]).decode()
+    encoded_hash = digest(obj, digits)
     if digits == default_digits:
         rv = 'UNF:{}:{}'.format(version, encoded_hash)
     else:
         fmt = 'UNF:{}:N{}:{}'
         rv = fmt.format(version, digits, encoded_hash)
     return rv
+
+def digest(obj, digits=default_digits):
+    string = normalize(obj, digits)
+    hash = hashlib.sha256(string).digest()
+    return base64.b64encode(hash[:16]).decode()
 
 def normalize(data, digits=default_digits):
     if not isinstance(digits, int):
