@@ -15,6 +15,19 @@ version = 6
 default_digits = 7
 characters = 128
 
+# --- public functions --------------------------------------------------
+
+def unf(obj, digits=default_digits):
+    string = normalize(obj, digits)
+    hash = hashlib.sha256(string).digest()
+    encoded_hash = base64.b64encode(hash[:16]).decode()
+    if digits == default_digits:
+        rv = 'UNF:{}:{}'.format(version, encoded_hash)
+    else:
+        fmt = 'UNF:{}:N{}:{}'
+        rv = fmt.format(version, digits, encoded_hash)
+    return rv
+
 def normalize(data, digits=default_digits):
     if not isinstance(digits, int):
         raise TypeError('digits must be an integer')
@@ -25,6 +38,8 @@ def normalize(data, digits=default_digits):
     if isinstance(data, (tuple, list)):
         return b''.join([ _normalize_primitive(el, digits) for el in data ])
     return _normalize_primitive(data, digits)
+
+# --- utilities ---------------------------------------------------------
 
 def _normalize_primitive(data, digits):
     if data is None:
@@ -96,16 +111,7 @@ def _rint(n):
         return n_int
     return int(round(n))
 
-def unf(obj, digits=default_digits):
-    string = normalize(obj, digits)
-    hash = hashlib.sha256(string).digest()
-    encoded_hash = base64.b64encode(hash[:16]).decode()
-    if digits == default_digits:
-        rv = 'UNF:{}:{}'.format(version, encoded_hash)
-    else:
-        fmt = 'UNF:{}:N{}:{}'
-        rv = fmt.format(version, digits, encoded_hash)
-    return rv
+# --- numpy functionality -----------------------------------------------
 
 def numpy_normalize_each(data, digits=default_digits):
 
