@@ -668,10 +668,15 @@ class TestPandas(unittest.TestCase):
         df = pandas.DataFrame({'a': [1.2345678, 2, 3], 'b': [4, 5, 6]})
         u = unf.unf(df)
         self.assertEqual(u, 'UNF:6:qs7MinjKNf+1+wy/RfVNvA==')
-
         return
 
     def test_data_frame_2(self):
+        df = pandas.DataFrame({'a': [4, 5, 6], 'b': [1.2345678, 2, 3]})
+        u = unf.unf(df)
+        self.assertEqual(u, 'UNF:6:qs7MinjKNf+1+wy/RfVNvA==')
+        return
+
+    def test_data_frame_3(self):
         df = pandas.DataFrame({'a': [1.2345678, 2, 3]})
         u = unf.unf(df)
         self.assertEqual(u, 'UNF:6:Gu/iYw2g7MIfVrNo1t4+zQ==')
@@ -693,10 +698,15 @@ class TestPandas(unittest.TestCase):
         df = pandas.DataFrame({'a': [1.2345678, 2, 3], 'b': [4, 5, 6]})
         u = unf.unf(df, 6)
         self.assertEqual(u, 'UNF:6:N6:FXXlk9tS02EIpobkfwDUgQ==')
-
         return
 
     def test_data_frame_2_digits(self):
+        df = pandas.DataFrame({'a': [4, 5, 6], 'b': [1.2345678, 2, 3]})
+        u = unf.unf(df, 6)
+        self.assertEqual(u, 'UNF:6:N6:FXXlk9tS02EIpobkfwDUgQ==')
+        return
+
+    def test_data_frame_3_digits(self):
         df = pandas.DataFrame({'a': [1.2345678, 2, 3]})
         u = unf.unf(df, 6)
         self.assertEqual(u, 'UNF:6:N6:SoKpWA1mdIXyd/7/QAqdVQ==')
