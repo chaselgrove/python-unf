@@ -32,10 +32,9 @@ def unf(obj, digits=DEFAULT_DIGITS):
     """
     encoded_hash = digest(obj, digits)
     if digits == DEFAULT_DIGITS:
-        rv = 'UNF:{}:{}'.format(UNF_VERSION, encoded_hash)
+        rv = f'UNF:{UNF_VERSION}:{encoded_hash}'
     else:
-        fmt = 'UNF:{}:N{}:{}'
-        rv = fmt.format(UNF_VERSION, digits, encoded_hash)
+        rv = f'UNF:{UNF_VERSION}:N{digits}:{encoded_hash}'
     return rv
 
 def digest(obj, digits=DEFAULT_DIGITS):
@@ -61,73 +60,52 @@ def normalize(data, digits=DEFAULT_DIGITS):
 # --- utilities ---------------------------------------------------------
 
 def _normalize_primitive(data, digits):
+    """Normalize a value of a simple data type."""
     if data is None:
-        return _normalize_none(data)
+        return b'\0\0\0'
     if isinstance(data, bool):
-        return _normalize_boolean(data)
+        return b'+1.e+\n\0' if data else b'+0.e+\n\0'
     if isinstance(data, str):
-        return _normalize_str(data)
+        return data.encode()[:STRING_CHARACTERS] + b'\n\0'
     if isinstance(data, (int, float)):
         return _normalize_number(data, digits)
     raise TypeError('unsupported type for data')
 
-def _normalize_none(data):
-    return b'\0\0\0'
-
-def _normalize_str(data):
-    return data.encode()[:STRING_CHARACTERS] + b'\n\0'
-
-def _normalize_boolean(data):
-    return b'+1.e+\n\0' if data else b'+0.e+\n\0'
-
 def _normalize_number(data, digits):
+    """Normalize a numeric (integer or floating point) value."""
     data = float(data)
     if math.isnan(data):
         return b'+nan\n\0'
     if math.isinf(data):
-        if data > 0:
-            return b'+inf\n\0'
-        return b'-inf\n\0'
+        return b'+inf\n\0' if data > 0 else b'-inf\n\0'
     if data == 0.0:
-        if math.copysign(1, data) > 0:
-            return b'+0.e+\n\0'
-        else:
-            return b'-0.e+\n\0'
-    return _nn(data, digits)
-
-def _nn(n, digits):
-    """Normalize a non-special number.
-
-    To match the behavior of the R UNF package, we don't round the
-    original values but rather scale the values so all of the
-    significant digits are to the left of the decimal point, then
-    round to integers, and then scale back.
-
-    See README.rounding for more information.
-    """
-    if n < 0:
-        n_sign = '-'
-        n = -n
+        return b'+0.e+\n\0' if math.copysign(1, data) > 0 else b'-0.e+\n\0'
+    # At this point we have a non-special number.  To match the
+    # behavior of the R UNF package (and, as far as I can tell, the
+    # IQSS code), we don't round the original values but rather scale
+    # the values so all of the significant digits are to the left of
+    # the decimal point, then round to integers, and then scale back.
+    # See ROUNDING.md for more information.
+    if data < 0:
+        sign = '-'
+        data = -data
     else:
-        n_sign = '+'
-    exp = int(math.floor(math.log10(n)))
-    n_int = _rint(n * 10**(digits-1-exp))
-    n_int_s = str(n_int)
-    i_part = n_int_s[0]
-    f_part = n_int_s[1:].rstrip('0')
+        sign = '+'
+    exp = int(math.floor(math.log10(data)))
+    data_s = str(_rint(data * 10**(digits-1-exp)))
+    i_part = data_s[0]
+    f_part = data_s[1:].rstrip('0')
     if exp == 0:
-        data = '{}{}.{}e+\n\0'.format(n_sign, i_part, f_part)
+        data = f'{sign}{i_part}.{f_part}e+\n\0'
     else:
-        data = '{}{}.{}e{:+d}\n\0'.format(n_sign, i_part, f_part, exp)
+        data = f'{sign}{i_part}.{f_part}e{exp:+d}\n\0'
     return data.encode()
 
 def _rint(n):
-    """rounds n to the nearest integer, towards even if a tie"""
+    """Round n to the nearest integer, towards even if a tie."""
     n_int = int(math.floor(n))
     if n == n_int + 0.5:
-        if n_int % 2:
-            return n_int + 1
-        return n_int
+        return n_int + 1 if n_int % 2 else n_int
     return int(round(n))
 
 # --- numpy functionality -----------------------------------------------
