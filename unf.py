@@ -50,9 +50,9 @@ def normalize(data, digits=DEFAULT_DIGITS):
     if digits < 1:
         raise ValueError('digits must be positive')
     if numpy and isinstance(data, numpy.ndarray):
-        return numpy_normalize(data, digits)
+        return _normalize_numpy(data, digits)
     if pandas and isinstance(data, (pandas.Series, pandas.DataFrame)):
-        return pandas_normalize(data, digits)
+        return _normalize_pandas(data, digits)
     if isinstance(data, (tuple, list)):
         return b''.join([ _normalize_primitive(el, digits) for el in data ])
     return _normalize_primitive(data, digits)
@@ -110,7 +110,7 @@ def _rint(n):
 
 # --- numpy functionality -----------------------------------------------
 
-def numpy_normalize(data, digits):
+def _normalize_numpy(data, digits):
     """Normalize a numpy array.
 
     The array must have a numeric data type.
@@ -207,7 +207,7 @@ def numpy_normalize(data, digits):
 
 # --- pandas functionality ----------------------------------------------
 
-def pandas_normalize(data, digits):
+def _normalize_pandas(data, digits):
     if isinstance(data, pandas.Series):
         # None comes out of a series as nan, so we map that back here.
         # We would want to map pandas.NA to None as well, but pandas.NA 

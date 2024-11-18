@@ -509,16 +509,16 @@ class TestNumpy(unittest.TestCase):
 
     def setUp(self):
         super().setUp()
-        self.numpy_normalize = unf.numpy_normalize
-        unf.numpy_normalize = unittest.mock.Mock(
-            spec=self.numpy_normalize, 
-            side_effect=self.numpy_normalize
+        self._normalize_numpy = unf._normalize_numpy
+        unf._normalize_numpy = unittest.mock.Mock(
+            spec=self._normalize_numpy, 
+            side_effect=self._normalize_numpy
         )
         return
 
     def tearDown(self):
         super().tearDown()
-        unf.numpy_normalize = self.numpy_normalize
+        unf._normalize_numpy = self._normalize_numpy
         return
 
     def test_heterogeneous(self):
@@ -534,7 +534,7 @@ class TestNumpy(unittest.TestCase):
              1.234567e150, 1.234567e-150)
         u_b = unf.unf(t)
         u_n = unf.unf(numpy.array(t))
-        self.assertTrue(unf.numpy_normalize.called)
+        self.assertTrue(unf._normalize_numpy.called)
         self.assertEqual(u_n, u_b)
         return
 
@@ -550,7 +550,7 @@ class TestNumpy(unittest.TestCase):
     # arrays.
     def test_0701_error(self):
         u = unf.unf(numpy.array([0.9005000798402081]))
-        self.assertTrue(unf.numpy_normalize.called)
+        self.assertTrue(unf._normalize_numpy.called)
         self.assertEqual(u, 'UNF:6:8eqCT5VNEgqICh3FnZsImQ==')
         return
 
@@ -561,85 +561,85 @@ class TestNumpy(unittest.TestCase):
 
     def test_exp_1(self):
         u = unf.unf(numpy.array([1e0]))
-        self.assertTrue(unf.numpy_normalize.called)
+        self.assertTrue(unf._normalize_numpy.called)
         self.assertEqual(u, 'UNF:6:tv3XYCv524AfmlFyVOhuZg==')
         return
 
     def test_exp_2(self):
         u = unf.unf(numpy.array([1e1]))
-        self.assertTrue(unf.numpy_normalize.called)
+        self.assertTrue(unf._normalize_numpy.called)
         self.assertEqual(u, 'UNF:6:o+nTsng0TLIV1N3Dqa2rRA==')
         return
 
     def test_exp_3(self):
         u = unf.unf(numpy.array([1e10]))
-        self.assertTrue(unf.numpy_normalize.called)
+        self.assertTrue(unf._normalize_numpy.called)
         self.assertEqual(u, 'UNF:6:TeER1wBkwE+zvHLxSEmnZA==')
         return
 
     def test_exp_4(self):
         u = unf.unf(numpy.array([1e100]))
-        self.assertTrue(unf.numpy_normalize.called)
+        self.assertTrue(unf._normalize_numpy.called)
         self.assertEqual(u, 'UNF:6:K67V/jah/5UTNdTqNfGNGQ==')
         return
 
     def test_exp_5(self):
         u = unf.unf(numpy.array([1e101]))
-        self.assertTrue(unf.numpy_normalize.called)
+        self.assertTrue(unf._normalize_numpy.called)
         self.assertEqual(u, 'UNF:6:WxchK5DSjOC/vrznE6g5KA==')
         return
 
     def test_value_1(self):
         u = unf.unf(numpy.array([1.00000001]))
-        self.assertTrue(unf.numpy_normalize.called)
+        self.assertTrue(unf._normalize_numpy.called)
         self.assertEqual(u, 'UNF:6:tv3XYCv524AfmlFyVOhuZg==')
         return
 
     def test_value_2(self):
         u = unf.unf(numpy.array([1.10000001]))
-        self.assertTrue(unf.numpy_normalize.called)
+        self.assertTrue(unf._normalize_numpy.called)
         self.assertEqual(u, 'UNF:6:e7mRzE999g+XdbMRqdnCkA==')
         return
 
     def test_value_3(self):
         u = unf.unf(numpy.array([1.1]))
-        self.assertTrue(unf.numpy_normalize.called)
+        self.assertTrue(unf._normalize_numpy.called)
         self.assertEqual(u, 'UNF:6:e7mRzE999g+XdbMRqdnCkA==')
         return
 
     def test_value_4(self):
         u = unf.unf(numpy.array([1.100001]))
-        self.assertTrue(unf.numpy_normalize.called)
+        self.assertTrue(unf._normalize_numpy.called)
         self.assertEqual(u, 'UNF:6:BZsaaf/5tFPpBmWgmIozJw==')
         return
 
     def test_value_5(self):
         u = unf.unf(numpy.array([1.1000001]))
-        self.assertTrue(unf.numpy_normalize.called)
+        self.assertTrue(unf._normalize_numpy.called)
         self.assertEqual(u, 'UNF:6:e7mRzE999g+XdbMRqdnCkA==')
         return
 
     def test_value_6(self):
         u = unf.unf(numpy.array([1.000001]))
-        self.assertTrue(unf.numpy_normalize.called)
+        self.assertTrue(unf._normalize_numpy.called)
         self.assertEqual(u, 'UNF:6:uTepcVWx1hT/FPAPcmNfzQ==')
         return
 
     def test_value_7(self):
         u = unf.unf(numpy.array([1.0000001]))
-        self.assertTrue(unf.numpy_normalize.called)
+        self.assertTrue(unf._normalize_numpy.called)
         self.assertEqual(u, 'UNF:6:tv3XYCv524AfmlFyVOhuZg==')
         return
 
     def test_value_8(self):
         u = unf.unf(numpy.array([1.00010001]))
-        self.assertTrue(unf.numpy_normalize.called)
+        self.assertTrue(unf._normalize_numpy.called)
         self.assertEqual(u, 'UNF:6:f2+uKERSm529tncALsUPpg==')
         return
 
     def test_value_9(self):
         u = unf.unf(numpy.array([1.10010001]))
-        self.assertTrue(unf.numpy_normalize.called)
+        self.assertTrue(unf._normalize_numpy.called)
         self.assertEqual(u, 'UNF:6:+fmO4JH7/DXQI2ay8JUyow==')
         return
 
