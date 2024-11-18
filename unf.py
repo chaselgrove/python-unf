@@ -110,19 +110,17 @@ def _rint(n):
 
 # --- numpy functionality -----------------------------------------------
 
-def numpy_normalize_each(data, digits=DEFAULT_DIGITS):
+def numpy_normalize(data, digits):
+    """Normalize a numpy array.
 
-    """Normalize values in a numpy array."""
+    The array must have a numeric data type.
+    """
 
-    if not isinstance(data, numpy.ndarray):
-        raise TypeError('data must be a numpy array')
-
-    if data.ndim == 0:
-        raise ValueError('ndim must be greater than zero')
-
+    if data.ndim != 1:
+        raise ValueError('numpy arrays must be 1-D')
     if not numpy.issubdtype(data.dtype, int) \
             and not numpy.issubdtype(data.dtype, float):
-        raise TypeError('data type must be integer or floating point')
+        raise ValueError('data type must be integer or floating point')
 
     # --- find special values and record signs, make all values positive, 
     # --- then replace special values with dummy numbers
@@ -203,19 +201,8 @@ def numpy_normalize_each(data, digits=DEFAULT_DIGITS):
     s[numpy.logical_and(zero_inds, signs > 0)] = b'+0.e+'
     s[numpy.logical_and(zero_inds, signs < 0)] = b'-0.e+'
 
-    return s
+    data = b'\n\0'.join(s) + b'\n\0'
 
-def numpy_normalize(data, digits):
-    """Normalize a numpy array.
-
-    The array must have a numeric data type.
-    """
-    if data.ndim > 1:
-        raise ValueError('numpy arrays must be 1-D')
-    if not numpy.issubdtype(data.dtype, int) and \
-            not numpy.issubdtype(data.dtype, float):
-        raise ValueError('unsupported numpy array data type')
-    data = b'\n\0'.join(numpy_normalize_each(data, digits)) + b'\n\0'
     return data
 
 # --- pandas functionality ----------------------------------------------
