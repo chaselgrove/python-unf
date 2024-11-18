@@ -24,6 +24,12 @@ HASH_BYTES = 16
 # --- public functions --------------------------------------------------
 
 def unf(obj, digits=DEFAULT_DIGITS):
+    """Calculate the UNF of an object.
+
+    The returned UNF is the full UNF with headers (UNF:6: and an optional 
+    digits indicator).  Non-standard string truncations and hash 
+    truncations are not supported.
+    """
     encoded_hash = digest(obj, digits)
     if digits == DEFAULT_DIGITS:
         rv = 'UNF:{}:{}'.format(UNF_VERSION, encoded_hash)
@@ -33,11 +39,13 @@ def unf(obj, digits=DEFAULT_DIGITS):
     return rv
 
 def digest(obj, digits=DEFAULT_DIGITS):
+    """Calculate the digest of an object."""
     string = normalize(obj, digits)
     hash = hashlib.sha256(string).digest()
     return base64.b64encode(hash[:HASH_BYTES]).decode()
 
 def normalize(data, digits=DEFAULT_DIGITS):
+    """Normalize an object to a byte string."""
     if not isinstance(digits, int):
         raise TypeError('digits must be an integer')
     if digits < 1:
