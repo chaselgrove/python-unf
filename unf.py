@@ -16,27 +16,27 @@ except ImportError:
 
 __version__ = '0.10.0'
 
-version = 6
-default_digits = 7
-characters = 128
+UNF_VERSION = 6
+DEFAULT_DIGITS = 7
+STRING_CHARACTERS = 128
 
 # --- public functions --------------------------------------------------
 
-def unf(obj, digits=default_digits):
+def unf(obj, digits=DEFAULT_DIGITS):
     encoded_hash = digest(obj, digits)
-    if digits == default_digits:
-        rv = 'UNF:{}:{}'.format(version, encoded_hash)
+    if digits == DEFAULT_DIGITS:
+        rv = 'UNF:{}:{}'.format(UNF_VERSION, encoded_hash)
     else:
         fmt = 'UNF:{}:N{}:{}'
-        rv = fmt.format(version, digits, encoded_hash)
+        rv = fmt.format(UNF_VERSION, digits, encoded_hash)
     return rv
 
-def digest(obj, digits=default_digits):
+def digest(obj, digits=DEFAULT_DIGITS):
     string = normalize(obj, digits)
     hash = hashlib.sha256(string).digest()
     return base64.b64encode(hash[:16]).decode()
 
-def normalize(data, digits=default_digits):
+def normalize(data, digits=DEFAULT_DIGITS):
     if not isinstance(digits, int):
         raise TypeError('digits must be an integer')
     if digits < 1:
@@ -66,7 +66,7 @@ def _normalize_none(data):
     return b'\0\0\0'
 
 def _normalize_str(data):
-    return data.encode()[:characters] + b'\n\0'
+    return data.encode()[:STRING_CHARACTERS] + b'\n\0'
 
 def _normalize_boolean(data):
     return b'+1.e+\n\0' if data else b'+0.e+\n\0'
@@ -123,7 +123,7 @@ def _rint(n):
 
 # --- numpy functionality -----------------------------------------------
 
-def numpy_normalize_each(data, digits=default_digits):
+def numpy_normalize_each(data, digits=DEFAULT_DIGITS):
 
     """Normalize values in a numpy array."""
 
