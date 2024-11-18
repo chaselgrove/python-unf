@@ -19,6 +19,7 @@ __version__ = '0.10.0'
 UNF_VERSION = 6
 DEFAULT_DIGITS = 7
 STRING_CHARACTERS = 128
+HASH_BYTES = 16
 
 # --- public functions --------------------------------------------------
 
@@ -34,7 +35,7 @@ def unf(obj, digits=DEFAULT_DIGITS):
 def digest(obj, digits=DEFAULT_DIGITS):
     string = normalize(obj, digits)
     hash = hashlib.sha256(string).digest()
-    return base64.b64encode(hash[:16]).decode()
+    return base64.b64encode(hash[:HASH_BYTES]).decode()
 
 def normalize(data, digits=DEFAULT_DIGITS):
     if not isinstance(digits, int):
