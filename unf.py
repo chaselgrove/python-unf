@@ -9,6 +9,11 @@ try:
 except ImportError:
     numpy = None
 
+try:
+    import pandas
+except ImportError:
+    pandas = None
+
 __version__ = '0.10.0'
 
 version = 6
@@ -38,6 +43,8 @@ def normalize(data, digits=default_digits):
         raise ValueError('digits must be positive')
     if numpy and isinstance(data, numpy.ndarray):
         return numpy_normalize(data, digits)
+    if pandas and isinstance(data, (pandas.Series, pandas.DataFrame)):
+        return pandas_normalize(data, digits)
     if isinstance(data, (tuple, list)):
         return b''.join([ _normalize_primitive(el, digits) for el in data ])
     return _normalize_primitive(data, digits)
@@ -223,5 +230,36 @@ def numpy_normalize(data, digits):
         raise ValueError('unsupported numpy array data type')
     data = b'\n\0'.join(numpy_normalize_each(data, digits)) + b'\n\0'
     return data
+
+# --- pandas functionality ----------------------------------------------
+
+def pandas_normalize(data, digits):
+    if isinstance(data, pandas.Series):
+        # None comes out of a series as nan, so we map that back here.
+        # We would want to map pandas.NA to None as well, but pandas.NA 
+        # requires a series of data type object, so its use is unsupported 
+        # due to our data type requirements.
+        if data.dtype.kind in ['i', 'u']:
+            vals = [ None if math.isnan(v) else int(v) for v in data ]
+        elif data.dtype.kind == 'f':
+            vals = [ None if math.isnan(v) else float(v) for v in data ]
+        else:
+            raise TypeError(f'unsupported pandas data type {data.dtype}')
+        return normalize(vals, digits)
+    elif isinstance(data, pandas.DataFrame):
+        # Special case: 
+        #     UNF of a data frame (datafile) with 1 variable:
+        #     The UNF of the data frame is the same as the UNF of the variable.
+        # https://guides.dataverse.org/en/latest/developers/unf/unf-v6.html
+        names = list(data)
+        if len(names) == 1:
+            return normalize(data[names[0]], digits)
+        digests = [ digest(data[name], digits) for name in data ]
+        digests.sort()
+        return normalize(digests, digits)
+    else:
+        msg = 'pandas normalize requires a pandas Series or DataFrame'
+        raise TypeError(msg)
+    return b''
 
 # eof

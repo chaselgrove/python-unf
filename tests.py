@@ -10,6 +10,11 @@ try:
 except ImportError:
     numpy = None
 
+try:
+    import pandas
+except ImportError:
+    pandas = None
+
 # test source is 
 # https://raw.githubusercontent.com/IQSS/UNF/master/doc/unf_examples.txt
 # with help from the UNF R package (version 2.0.5)
@@ -710,6 +715,65 @@ class TestNumpyNormalizeEach(unittest.TestCase):
         arr = unf.numpy_normalize_each(numpy.zeros((2, 3, 4)))
         self.assertIsInstance(arr, numpy.ndarray)
         self.assertEqual(arr.shape, (2, 3, 4))
+        return
+
+@unittest.skipIf(not pandas, 'pandas not installed')
+class TestPandas(unittest.TestCase):
+
+    def test_series(self):
+        s = pandas.Series([1.2345678, 2, 3])
+        u = unf.unf(s)
+        self.assertEqual(u, 'UNF:6:Gu/iYw2g7MIfVrNo1t4+zQ==')
+        return
+
+    def test_series_2(self):
+        s = pandas.Series([1.2345678, None, 3])
+        u = unf.unf(s)
+        self.assertEqual(u, 'UNF:6:t5y+wj7UWZB7PO0R+r6c3A==')
+        return
+
+    def test_series_dtype(self):
+        s = pandas.Series(['a'])
+        with self.assertRaises(TypeError):
+            unf.unf(s)
+        return
+
+    def test_data_frame(self):
+        df = pandas.DataFrame({'a': [1.2345678, 2, 3], 'b': [4, 5, 6]})
+        u = unf.unf(df)
+        self.assertEqual(u, 'UNF:6:qs7MinjKNf+1+wy/RfVNvA==')
+
+        return
+
+    def test_data_frame_2(self):
+        df = pandas.DataFrame({'a': [1.2345678, 2, 3]})
+        u = unf.unf(df)
+        self.assertEqual(u, 'UNF:6:Gu/iYw2g7MIfVrNo1t4+zQ==')
+        return
+
+    def test_series_digits(self):
+        s = pandas.Series([1.2345678, 2, 3])
+        u = unf.unf(s, 6)
+        self.assertEqual(u, 'UNF:6:N6:SoKpWA1mdIXyd/7/QAqdVQ==')
+        return
+
+    def test_series_2_digits(self):
+        s = pandas.Series([1.2345678, None, 3])
+        u = unf.unf(s, 6)
+        self.assertEqual(u, 'UNF:6:N6:GMsD/Sf8VOarlClFV3r3HA==')
+        return
+
+    def test_data_frame_digits(self):
+        df = pandas.DataFrame({'a': [1.2345678, 2, 3], 'b': [4, 5, 6]})
+        u = unf.unf(df, 6)
+        self.assertEqual(u, 'UNF:6:N6:FXXlk9tS02EIpobkfwDUgQ==')
+
+        return
+
+    def test_data_frame_2_digits(self):
+        df = pandas.DataFrame({'a': [1.2345678, 2, 3]})
+        u = unf.unf(df, 6)
+        self.assertEqual(u, 'UNF:6:N6:SoKpWA1mdIXyd/7/QAqdVQ==')
         return
 
 # eof
