@@ -504,17 +504,16 @@ class TestNumpy(unittest.TestCase):
 
     def setUp(self):
         super().setUp()
-        import unf.numpy
-        self.normalize = unf.numpy.normalize
-        unf.numpy.normalize = unittest.mock.Mock(
-            spec=self.normalize, 
-            side_effect=self.normalize
+        self.numpy_normalize = unf.numpy_normalize
+        unf.numpy_normalize = unittest.mock.Mock(
+            spec=self.numpy_normalize, 
+            side_effect=self.numpy_normalize
         )
         return
 
     def tearDown(self):
         super().tearDown()
-        unf.numpy.normalize = self.normalize
+        unf.numpy_normalize = self.numpy_normalize
         return
 
     def test_heterogeneous(self):
@@ -530,7 +529,7 @@ class TestNumpy(unittest.TestCase):
              1.234567e150, 1.234567e-150)
         u_b = unf.unf(t)
         u_n = unf.unf(numpy.array(t))
-        self.assertTrue(unf.numpy.normalize.called)
+        self.assertTrue(unf.numpy_normalize.called)
         self.assertEqual(u_n, u_b)
         return
 
@@ -546,7 +545,7 @@ class TestNumpy(unittest.TestCase):
     # arrays.
     def test_0701_error(self):
         u = unf.unf(numpy.array([0.9005000798402081]))
-        self.assertTrue(unf.numpy.normalize.called)
+        self.assertTrue(unf.numpy_normalize.called)
         self.assertEqual(u, 'UNF:6:8eqCT5VNEgqICh3FnZsImQ==')
         return
 
@@ -557,85 +556,85 @@ class TestNumpy(unittest.TestCase):
 
     def test_exp_1(self):
         u = unf.unf(numpy.array([1e0]))
-        self.assertTrue(unf.numpy.normalize.called)
+        self.assertTrue(unf.numpy_normalize.called)
         self.assertEqual(u, 'UNF:6:tv3XYCv524AfmlFyVOhuZg==')
         return
 
     def test_exp_2(self):
         u = unf.unf(numpy.array([1e1]))
-        self.assertTrue(unf.numpy.normalize.called)
+        self.assertTrue(unf.numpy_normalize.called)
         self.assertEqual(u, 'UNF:6:o+nTsng0TLIV1N3Dqa2rRA==')
         return
 
     def test_exp_3(self):
         u = unf.unf(numpy.array([1e10]))
-        self.assertTrue(unf.numpy.normalize.called)
+        self.assertTrue(unf.numpy_normalize.called)
         self.assertEqual(u, 'UNF:6:TeER1wBkwE+zvHLxSEmnZA==')
         return
 
     def test_exp_4(self):
         u = unf.unf(numpy.array([1e100]))
-        self.assertTrue(unf.numpy.normalize.called)
+        self.assertTrue(unf.numpy_normalize.called)
         self.assertEqual(u, 'UNF:6:K67V/jah/5UTNdTqNfGNGQ==')
         return
 
     def test_exp_5(self):
         u = unf.unf(numpy.array([1e101]))
-        self.assertTrue(unf.numpy.normalize.called)
+        self.assertTrue(unf.numpy_normalize.called)
         self.assertEqual(u, 'UNF:6:WxchK5DSjOC/vrznE6g5KA==')
         return
 
     def test_value_1(self):
         u = unf.unf(numpy.array([1.00000001]))
-        self.assertTrue(unf.numpy.normalize.called)
+        self.assertTrue(unf.numpy_normalize.called)
         self.assertEqual(u, 'UNF:6:tv3XYCv524AfmlFyVOhuZg==')
         return
 
     def test_value_2(self):
         u = unf.unf(numpy.array([1.10000001]))
-        self.assertTrue(unf.numpy.normalize.called)
+        self.assertTrue(unf.numpy_normalize.called)
         self.assertEqual(u, 'UNF:6:e7mRzE999g+XdbMRqdnCkA==')
         return
 
     def test_value_3(self):
         u = unf.unf(numpy.array([1.1]))
-        self.assertTrue(unf.numpy.normalize.called)
+        self.assertTrue(unf.numpy_normalize.called)
         self.assertEqual(u, 'UNF:6:e7mRzE999g+XdbMRqdnCkA==')
         return
 
     def test_value_4(self):
         u = unf.unf(numpy.array([1.100001]))
-        self.assertTrue(unf.numpy.normalize.called)
+        self.assertTrue(unf.numpy_normalize.called)
         self.assertEqual(u, 'UNF:6:BZsaaf/5tFPpBmWgmIozJw==')
         return
 
     def test_value_5(self):
         u = unf.unf(numpy.array([1.1000001]))
-        self.assertTrue(unf.numpy.normalize.called)
+        self.assertTrue(unf.numpy_normalize.called)
         self.assertEqual(u, 'UNF:6:e7mRzE999g+XdbMRqdnCkA==')
         return
 
     def test_value_6(self):
         u = unf.unf(numpy.array([1.000001]))
-        self.assertTrue(unf.numpy.normalize.called)
+        self.assertTrue(unf.numpy_normalize.called)
         self.assertEqual(u, 'UNF:6:uTepcVWx1hT/FPAPcmNfzQ==')
         return
 
     def test_value_7(self):
         u = unf.unf(numpy.array([1.0000001]))
-        self.assertTrue(unf.numpy.normalize.called)
+        self.assertTrue(unf.numpy_normalize.called)
         self.assertEqual(u, 'UNF:6:tv3XYCv524AfmlFyVOhuZg==')
         return
 
     def test_value_8(self):
         u = unf.unf(numpy.array([1.00010001]))
-        self.assertTrue(unf.numpy.normalize.called)
+        self.assertTrue(unf.numpy_normalize.called)
         self.assertEqual(u, 'UNF:6:f2+uKERSm529tncALsUPpg==')
         return
 
     def test_value_9(self):
         u = unf.unf(numpy.array([1.10010001]))
-        self.assertTrue(unf.numpy.normalize.called)
+        self.assertTrue(unf.numpy_normalize.called)
         self.assertEqual(u, 'UNF:6:+fmO4JH7/DXQI2ay8JUyow==')
         return
 
@@ -652,63 +651,63 @@ class TestNumpyNormalizeEach(unittest.TestCase):
 
     def test_digits_type(self):
         with self.assertRaises(TypeError):
-            unf.numpy.normalize_each(numpy.array([1]), digits='')
+            unf.numpy_normalize_each(numpy.array([1]), digits='')
         return
 
     def test_digits_value(self):
         with self.assertRaises(ValueError):
-            unf.numpy.normalize_each(numpy.array([1]), digits=0)
+            unf.numpy_normalize_each(numpy.array([1]), digits=0)
         return
 
     def test_type_1(self):
         with self.assertRaises(TypeError):
-            unf.numpy.normalize_each(None)
+            unf.numpy_normalize_each(None)
         return
 
     def test_type_2(self):
         with self.assertRaises(TypeError):
-            unf.numpy.normalize_each(1)
+            unf.numpy_normalize_each(1)
         return
 
     def test_type_3(self):
         with self.assertRaises(TypeError):
-            unf.numpy.normalize_each(1.5)
+            unf.numpy_normalize_each(1.5)
         return
 
     def test_type_4(self):
         with self.assertRaises(TypeError):
-            unf.numpy.normalize_each([])
+            unf.numpy_normalize_each([])
         return
 
     def test_type_5(self):
         with self.assertRaises(TypeError):
-            unf.numpy.normalize_each('')
+            unf.numpy_normalize_each('')
         return
 
     def test_type_6(self):
         with self.assertRaises(TypeError):
-            unf.numpy.normalize_each(numpy.zeros((1, ), dtype='float128'))
+            unf.numpy_normalize_each(numpy.zeros((1, ), dtype='float128'))
         return
 
     def test_ndim(self):
         with self.assertRaises(ValueError):
-            unf.numpy.normalize_each(numpy.array(1))
+            unf.numpy_normalize_each(numpy.array(1))
         return
 
     def test_shape_1(self):
-        arr = unf.numpy.normalize_each(numpy.array([1]))
+        arr = unf.numpy_normalize_each(numpy.array([1]))
         self.assertIsInstance(arr, numpy.ndarray)
         self.assertEqual(arr.shape, (1, ))
         return
 
     def test_shape_2(self):
-        arr = unf.numpy.normalize_each(numpy.zeros((2, 3)))
+        arr = unf.numpy_normalize_each(numpy.zeros((2, 3)))
         self.assertIsInstance(arr, numpy.ndarray)
         self.assertEqual(arr.shape, (2, 3))
         return
 
     def test_shape_3(self):
-        arr = unf.numpy.normalize_each(numpy.zeros((2, 3, 4)))
+        arr = unf.numpy_normalize_each(numpy.zeros((2, 3, 4)))
         self.assertIsInstance(arr, numpy.ndarray)
         self.assertEqual(arr.shape, (2, 3, 4))
         return
