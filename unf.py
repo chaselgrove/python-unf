@@ -227,7 +227,7 @@ def _normalize_pandas(data, digits):
         elif data.dtype.kind == 'f':
             vals = [ None if math.isnan(v) else float(v) for v in data ]
         else:
-            raise TypeError(f'unsupported pandas data type {data.dtype}')
+            raise ValueError(f'unsupported pandas data type {data.dtype}')
         return normalize(vals, digits)
     elif isinstance(data, pandas.DataFrame):
         # Special case: 

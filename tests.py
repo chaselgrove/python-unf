@@ -696,7 +696,7 @@ class TestPandas(unittest.TestCase):
 
     def test_series_dtype(self):
         s = pandas.Series(['a'])
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             unf.unf(s)
         return
 
