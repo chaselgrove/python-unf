@@ -116,11 +116,15 @@ def _normalize_numpy(data, digits):
     The array must have a numeric data type.
     """
 
-    if data.ndim != 1:
-        raise ValueError('numpy arrays must be 1-D')
     if not numpy.issubdtype(data.dtype, int) \
             and not numpy.issubdtype(data.dtype, float):
         raise ValueError('data type must be integer or floating point')
+
+    if data.ndim == 2:
+        if data.shape[0] == 1:
+            data = data.ravel()
+    elif data.ndim != 1:
+        raise ValueError('numpy arrays must be 1- or 2-D')
 
     # --- find special values and record signs, make all values positive, 
     # --- then replace special values with dummy numbers
@@ -201,7 +205,12 @@ def _normalize_numpy(data, digits):
     s[numpy.logical_and(zero_inds, signs > 0)] = b'+0.e+'
     s[numpy.logical_and(zero_inds, signs < 0)] = b'-0.e+'
 
-    data = b'\n\0'.join(s) + b'\n\0'
+    if s.ndim == 1:
+        data = b'\n\0'.join(s) + b'\n\0'
+    else:
+        digests = [ digest(b'\n\0'.join(row).decode(), digits) for row in s ]
+        digests.sort()
+        return normalize(digests, digits)
 
     return data
 

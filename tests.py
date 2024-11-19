@@ -538,9 +538,45 @@ class TestNumpy(unittest.TestCase):
         self.assertEqual(u_n, u_b)
         return
 
-    def test_matrix(self):
-        a = numpy.array(((1, 2, 3), (4, 5, 6)))
-        self.assertRaises(ValueError, unf.unf, a)
+    def test_dim_0(self):
+        with self.assertRaises(TypeError):
+            unf.unf(numpy.int64(0))
+        return
+
+    def test_dim_2(self):
+        a = numpy.array([[1.2345678, 2, 3], [4, 5, 6]])
+        u = unf.unf(a)
+        self.assertEqual(u, 'UNF:6:qs7MinjKNf+1+wy/RfVNvA==')
+        a = numpy.array([[4, 5, 6], [1.2345678, 2, 3]])
+        u = unf.unf(a)
+        self.assertEqual(u, 'UNF:6:qs7MinjKNf+1+wy/RfVNvA==')
+        return
+
+    def test_dim_2_digits(self):
+        a = numpy.array([[1.2345678, 2, 3], [4, 5, 6]])
+        u = unf.unf(a, 6)
+        self.assertEqual(u, 'UNF:6:N6:FXXlk9tS02EIpobkfwDUgQ==')
+        a = numpy.array([[4, 5, 6], [1.2345678, 2, 3]])
+        u = unf.unf(a, 6)
+        self.assertEqual(u, 'UNF:6:N6:FXXlk9tS02EIpobkfwDUgQ==')
+        return
+
+    def test_dim_2_1a(self):
+        a = numpy.array([[1.2345678, 2, 3]])
+        u = unf.unf(a)
+        self.assertEqual(u, 'UNF:6:Gu/iYw2g7MIfVrNo1t4+zQ==')
+        return
+
+    def test_dim_2_1b(self):
+        a = numpy.array([[1.2345678], [2], [3]])
+        u = unf.unf(a)
+        self.assertEqual(u, 'UNF:6:2FSEGfhYpvPqVoY3AlpNrw==')
+        return
+
+    def test_dim_3(self):
+        a = numpy.zeros((2, 3, 4))
+        with self.assertRaises(ValueError):
+            unf.unf(a)
         return
 
     # Versions through 0.7.1 have an error where scaled values
