@@ -2,13 +2,17 @@
 
 # See file COPYING distributed with python-unf for copyright and license.
 
-# Test source is 
+# Many of the tests come from 
 # https://raw.githubusercontent.com/IQSS/UNF/master/doc/unf_examples.txt
-# with help from https://github.com/leeper/UNF, 
+# and 
+# https://github.com/IQSS/UNF/tree/master/src/test/resources/test.
+# Tests are validated with help from https://github.com/leeper/UNF, 
 # https://github.com/IQSS/UNF.git, 
 # and http://guides.dataverse.org/en/latest/developers/unf/unf-v6.html.
 
 import unittest.mock
+import math
+
 import unf
 
 try:
@@ -20,6 +24,273 @@ try:
     import pandas
 except ImportError:
     pandas = None
+
+class IQSSTests(unittest.TestCase):
+
+    # Tests from 
+    # https://github.com/IQSS/UNF/tree/master/src/test/resources/test
+
+    @unittest.skip('pending https://github.com/IQSS/UNF/issues/8')
+    def test_boolean(self):
+        val = [True, False, True]
+        self.assertEqual(unf.unf(val), 'UNF:6:PMaEyvdvyMz7EJV4mr7aZg==')
+        return
+
+    def test_double(self):
+        val = [6.6666666666666667, 75.216]
+        self.assertEqual(unf.unf(val), 'UNF:6:+kc3wyGwZ6otDkZwpvswDw==')
+        return
+
+    def test_float(self):
+        val = [654.32, 26736.232]
+        self.assertEqual(unf.unf(val), 'UNF:6:V2clNd9rUmIG0mhGVmzmVA==')
+        return
+
+    def test_int(self):
+        val = [32, 2024]
+        self.assertEqual(unf.unf(val), 'UNF:6:R2Xa8BqKPRgj5EpnYEZQyw==')
+        return
+
+    def test_long(self):
+        val = [22, 3892091]
+        self.assertEqual(unf.unf(val), 'UNF:6:qu3+pyyv8y0FEhVQueuWuw==')
+        return
+
+    def test_short(self):
+        val = [247, 34]
+        self.assertEqual(unf.unf(val), 'UNF:6:GFy92enld/1lP8pcXq9L6w==')
+        return
+
+    def test_string(self):
+        val = ['Hello World', 'Testing 123']
+        self.assertEqual(unf.unf(val), 'UNF:6:r+FDbVC6fKdUjRS6ZIzP4w==')
+        return
+
+class UNFSpecificationTests(unittest.TestCase):
+
+    # Tests from 
+    # https://guides.dataverse.org/en/latest/developers/unf/unf-v6.html
+
+    def test_positive_zero_normalization(self):
+        val = 0.0
+        s = b'+0.e+\n\0'
+        self.assertEqual(unf._normalize(val, unf.DEFAULT_DIGITS), s)
+        return
+
+    def test_negative_zero_normalization(self):
+        val = -0.0
+        s = b'-0.e+\n\0'
+        self.assertEqual(unf._normalize(val, unf.DEFAULT_DIGITS), s)
+        return
+
+    def test_positive_inf_normalization(self):
+        val = float('+Inf')
+        s = b'+inf\n\0'
+        self.assertEqual(unf._normalize(val, unf.DEFAULT_DIGITS), s)
+        return
+
+    def test_negative_inf_normalization(self):
+        val = float('-Inf')
+        s = b'-inf\n\0'
+        self.assertEqual(unf._normalize(val, unf.DEFAULT_DIGITS), s)
+        return
+
+    def test_nan_normalization(self):
+        val = float('NaN')
+        s = b'+nan\n\0'
+        self.assertEqual(unf._normalize(val, unf.DEFAULT_DIGITS), s)
+        return
+
+    def test_1_normalization(self):
+        val = 1
+        s = b'+1.e+\n\0'
+        self.assertEqual(unf._normalize(val, unf.DEFAULT_DIGITS), s)
+        return
+
+    # The example in the specification is incorrect.  It says '+3.1415+' 
+    # but the '59' should be rounded up to get '+3.1416+'.
+    def test_pi_5_digits_normalization(self):
+        val = math.pi
+        s = b'+3.1416e+\n\0'
+        self.assertEqual(unf._normalize(val, 5), s)
+        return
+
+    def test_negative_300_normalization(self):
+        val = -300
+        s = b'-3.e+2\n\0'
+        self.assertEqual(unf._normalize(val, unf.DEFAULT_DIGITS), s)
+        return
+
+    def test_73em4_normalization(self):
+        val = 0.00073 
+        s = b'+7.3e-4\n\0'
+        self.assertEqual(unf._normalize(val, unf.DEFAULT_DIGITS), s)
+        return
+
+    def test_1t9_normalization(self):
+        val = 1.23456789
+        s = b'+1.234568e+\n\0'
+        self.assertEqual(unf._normalize(val, unf.DEFAULT_DIGITS), s)
+        return
+
+    def test_vector(self):
+        val = [1.23456789, None, 0]
+        s = b'+1.234568e+\n\000\000\000\000+0.e+\n\000'
+        self.assertEqual(unf._normalize(val, unf.DEFAULT_DIGITS), s)
+        self.assertEqual(unf.unf(val), 'UNF:6:Do5dfAoOOFt4FSj0JcByEw==')
+        return
+
+    def test_1t9_unf(self):
+        val = 1.23456789
+        u = 'UNF:6:vcKELUSS4s4k1snF4OTB9A=='
+        self.assertEqual(unf.unf(val), u)
+        return
+
+    def test_1t9_9_digits_unf(self):
+        val = 1.23456789
+        u = 'UNF:6:N9:IKw+l4ywdwsJeDze8dplJA=='
+        self.assertEqual(unf.unf(val, 9), u)
+        return
+
+class ExamplesTests(unittest.TestCase):
+
+    # Tests from 
+    # https://raw.githubusercontent.com/IQSS/UNF/master/doc/unf_examples.txt
+
+    def test_0(self):
+        val = 0
+        s = b'+0.e+\n\000'
+        d = 'YUvj33xEHnzirIHQyZaHow=='
+        self.assertEqual(unf._normalize(val, unf.DEFAULT_DIGITS), s)
+        self.assertEqual(unf._digest(val, unf.DEFAULT_DIGITS), d)
+        self.assertEqual(unf.unf(val), 'UNF:6:' + d)
+        return
+
+    def test_1(self):
+        val = 1
+        s = b'+1.e+\n\000'
+        d = 'tv3XYCv524AfmlFyVOhuZg=='
+        self.assertEqual(unf._normalize(val, unf.DEFAULT_DIGITS), s)
+        self.assertEqual(unf._digest(val, unf.DEFAULT_DIGITS), d)
+        self.assertEqual(unf.unf(val), 'UNF:6:' + d)
+        return
+
+    def test_m300(self):
+        val = -300
+        s = b'-3.e+2\n\000'
+        d = 'ZTXyg54FoMfRDWZl6oWmFQ=='
+        self.assertEqual(unf._normalize(val, unf.DEFAULT_DIGITS), s)
+        self.assertEqual(unf._digest(val, unf.DEFAULT_DIGITS), d)
+        self.assertEqual(unf.unf(val), 'UNF:6:' + d)
+        return
+
+    def test_pi(self):
+        val = 3.1415
+        s = b'+3.1415e+\n\000'
+        d = 'vOSZmXXXpKfQcqZ0Cuu5/w=='
+        self.assertEqual(unf._normalize(val, unf.DEFAULT_DIGITS), s)
+        self.assertEqual(unf._digest(val, unf.DEFAULT_DIGITS), d)
+        self.assertEqual(unf.unf(val), 'UNF:6:' + d)
+        return
+
+    def test_73em4(self):
+        val = 0.00073
+        s = b'+7.3e-4\n\000'
+        d = 'qhw3qzg3fEK0NNfoVxk4jQ=='
+        self.assertEqual(unf._normalize(val, unf.DEFAULT_DIGITS), s)
+        self.assertEqual(unf._digest(val, unf.DEFAULT_DIGITS), d)
+        self.assertEqual(unf.unf(val), 'UNF:6:' + d)
+        return
+
+    # See https://github.com/IQSS/UNF/pull/3
+    def test_round_1(self):
+        val = 1.2345675
+        s = b'+1.234568e+\n\000'
+        self.assertEqual(unf._normalize(val, unf.DEFAULT_DIGITS), s)
+        return
+
+    # See https://github.com/IQSS/UNF/pull/3
+    def test_round_2(self):
+        val = 1.2345685
+        s = b'+1.234568e+\n\000'
+        self.assertEqual(unf._normalize(val, unf.DEFAULT_DIGITS), s)
+        return
+
+    def test_nan(self):
+        val = float('NaN')
+        s = b'+nan\n\000'
+        d = 'GNcR8/UCnImaPpw47gdPNg=='
+        self.assertEqual(unf._normalize(val, unf.DEFAULT_DIGITS), s)
+        self.assertEqual(unf._digest(val, unf.DEFAULT_DIGITS), d)
+        self.assertEqual(unf.unf(val), 'UNF:6:' + d)
+        return
+
+    def test_positive_inf(self):
+        val = float('+Inf')
+        s = b'+inf\n\000'
+        d = 'MdAI70WZdDHnu6qmkpqUQg=='
+        self.assertEqual(unf._normalize(val, unf.DEFAULT_DIGITS), s)
+        self.assertEqual(unf._digest(val, unf.DEFAULT_DIGITS), d)
+        self.assertEqual(unf.unf(val), 'UNF:6:' + d)
+        return
+
+    def test_negative_inf(self):
+        val = float('-Inf')
+        s = b'-inf\n\000'
+        d = 'A7orv3pgAhljFnGjQVLCog=='
+        self.assertEqual(unf._normalize(val, unf.DEFAULT_DIGITS), s)
+        self.assertEqual(unf._digest(val, unf.DEFAULT_DIGITS), d)
+        self.assertEqual(unf.unf(val), 'UNF:6:' + d)
+        return
+
+    def test_simple_string(self):
+        val = 'A character String'
+        s = b'A character String\n\0'
+        d = 'FYqU7uBl885eHMbpco1ooA=='
+        self.assertEqual(unf._normalize(val, unf.DEFAULT_DIGITS), s)
+        self.assertEqual(unf._digest(val, unf.DEFAULT_DIGITS), d)
+        self.assertEqual(unf.unf(val), 'UNF:6:' + d)
+        return
+
+    def test_long_string(self):
+        val = 'A quite long character string, so long that the ' \
+              'number of characters in it happens to be more than ' \
+              'the default cutoff limit of 128.'
+        s = b'A quite long character string, so long that the number ' \
+            b'of characters in it happens to be more than the default ' \
+            b'cutoff limit of 1\n\0'
+        d = '/BoSlfcIlsmQ+GHu5gxwEw=='
+        self.assertEqual(unf._normalize(val, unf.DEFAULT_DIGITS), s)
+        self.assertEqual(unf._digest(val, unf.DEFAULT_DIGITS), d)
+        self.assertEqual(unf.unf(val), 'UNF:6:' + d)
+        return
+
+    def test_accented_string(self):
+        val = 'på Færøerne'
+        s = b'p\xc3\xa5 F\xc3\xa6r\xc3\xb8erne\n\0'
+        d = 'KHM6bKVaVaxWDDsmyerfDA=='
+        self.assertEqual(unf._normalize(val, unf.DEFAULT_DIGITS), s)
+        self.assertEqual(unf._digest(val, unf.DEFAULT_DIGITS), d)
+        self.assertEqual(unf.unf(val), 'UNF:6:' + d)
+        return
+
+    def test_empty_string(self):
+        val = ''
+        s = b'\n\0'
+        d = 'ECtRuXZaVqPomffPDuOOUg=='
+        self.assertEqual(unf._normalize(val, unf.DEFAULT_DIGITS), s)
+        self.assertEqual(unf._digest(val, unf.DEFAULT_DIGITS), d)
+        self.assertEqual(unf.unf(val), 'UNF:6:' + d)
+        return
+
+    def test_missing_value(self):
+        val = None
+        s = b'\0\0\0'
+        d = 'cJ6AyISHokEeHuTfufIqhg=='
+        self.assertEqual(unf._normalize(val, unf.DEFAULT_DIGITS), s)
+        self.assertEqual(unf._digest(val, unf.DEFAULT_DIGITS), d)
+        self.assertEqual(unf.unf(val), 'UNF:6:' + d)
+        return
 
 class TestUNFs(unittest.TestCase):
 
