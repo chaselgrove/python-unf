@@ -2,6 +2,12 @@
 
 # See file COPYING distributed with python-unf for copyright and license.
 
+# Test source is 
+# https://raw.githubusercontent.com/IQSS/UNF/master/doc/unf_examples.txt
+# with help from https://github.com/leeper/UNF, 
+# https://github.com/IQSS/UNF.git, 
+# and http://guides.dataverse.org/en/latest/developers/unf/unf-v6.html.
+
 import unittest.mock
 import unf
 
@@ -14,11 +20,6 @@ try:
     import pandas
 except ImportError:
     pandas = None
-
-# test source is 
-# https://raw.githubusercontent.com/IQSS/UNF/master/doc/unf_examples.txt
-# with help from the UNF R package (version 2.0.5)
-# and http://guides.dataverse.org/en/latest/developers/unf/unf-v6.html
 
 class TestUNFs(unittest.TestCase):
 
