@@ -30,20 +30,22 @@ def unf(obj, digits=DEFAULT_DIGITS):
     digits indicator).  Non-standard string truncations and hash 
     truncations are not supported.
     """
-    encoded_hash = digest(obj, digits)
+    encoded_hash = _digest(obj, digits)
     if digits == DEFAULT_DIGITS:
         rv = f'UNF:{UNF_VERSION}:{encoded_hash}'
     else:
         rv = f'UNF:{UNF_VERSION}:N{digits}:{encoded_hash}'
     return rv
 
-def digest(obj, digits=DEFAULT_DIGITS):
+# --- utilities ---------------------------------------------------------
+
+def _digest(obj, digits):
     """Calculate the digest of an object."""
-    string = normalize(obj, digits)
+    string = _normalize(obj, digits)
     hash = hashlib.sha256(string).digest()
     return base64.b64encode(hash[:HASH_BYTES]).decode()
 
-def normalize(data, digits=DEFAULT_DIGITS):
+def _normalize(data, digits):
     """Normalize an object to a byte string."""
     if not isinstance(digits, int):
         raise TypeError('digits must be an integer')
@@ -56,8 +58,6 @@ def normalize(data, digits=DEFAULT_DIGITS):
     if isinstance(data, (tuple, list)):
         return b''.join([ _normalize_primitive(el, digits) for el in data ])
     return _normalize_primitive(data, digits)
-
-# --- utilities ---------------------------------------------------------
 
 def _normalize_primitive(data, digits):
     """Normalize a value of a simple data type."""
@@ -208,9 +208,9 @@ def _normalize_numpy(data, digits):
     if s.ndim == 1:
         data = b'\n\0'.join(s) + b'\n\0'
     else:
-        digests = [ digest(b'\n\0'.join(row).decode(), digits) for row in s ]
+        digests = [ _digest(b'\n\0'.join(row).decode(), digits) for row in s ]
         digests.sort()
-        return normalize(digests, digits)
+        return _normalize(digests, digits)
 
     return data
 
@@ -228,7 +228,7 @@ def _normalize_pandas(data, digits):
             vals = [ None if math.isnan(v) else float(v) for v in data ]
         else:
             raise ValueError(f'unsupported pandas data type {data.dtype}')
-        return normalize(vals, digits)
+        return _normalize(vals, digits)
     elif isinstance(data, pandas.DataFrame):
         # Special case: 
         #     UNF of a data frame (datafile) with 1 variable:
@@ -236,10 +236,10 @@ def _normalize_pandas(data, digits):
         # https://guides.dataverse.org/en/latest/developers/unf/unf-v6.html
         names = list(data)
         if len(names) == 1:
-            return normalize(data[names[0]], digits)
-        digests = [ digest(data[name], digits) for name in data ]
+            return _normalize(data[names[0]], digits)
+        digests = [ _digest(data[name], digits) for name in data ]
         digests.sort()
-        return normalize(digests, digits)
+        return _normalize(digests, digits)
     else:
         msg = 'pandas normalize requires a pandas Series or DataFrame'
         raise TypeError(msg)
