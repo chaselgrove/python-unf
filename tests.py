@@ -461,26 +461,28 @@ class TestNumpy(unittest.TestCase):
         unf._normalize_numpy = self._normalize_numpy
         return
 
+    # ---------------------------------------------------------
+    # error tests
+
     def test_heterogeneous(self):
         with self.assertRaises(ValueError):
             unf.unf(numpy.array([None, True, 2, 3.4, '5.6.7']))
         return
 
-    def test_speed(self):
-        t = (float('NaN'), float('+Inf'), float('-Inf'), 
-             0.0, -0.0, 0, 1, -300, 
-             3.1415, 0.00073, 
-             1.2345675, 1.2345685, 1.2345635, 1.2345645, 
-             1.234567e150, 1.234567e-150)
-        u_b = unf.unf(t)
-        u_n = unf.unf(numpy.array(t))
-        self.assertTrue(unf._normalize_numpy.called)
-        self.assertEqual(u_n, u_b)
-        return
+    # ---------------------------------------------------------
+    # dimension tests
 
     def test_dim_0(self):
         with self.assertRaises(TypeError):
             unf.unf(numpy.int64(0))
+        return
+
+    def test_dim_1_single_value(self):
+        u = unf.unf(1)
+        self.assertFalse(unf._normalize_numpy.called)
+        nu = unf.unf(numpy.array([1]))
+        self.assertTrue(unf._normalize_numpy.called)
+        self.assertEqual(u, nu)
         return
 
     def test_dim_2(self):
@@ -490,15 +492,6 @@ class TestNumpy(unittest.TestCase):
         a = numpy.array([[4, 5, 6], [1.2345678, 2, 3]])
         u = unf.unf(a)
         self.assertEqual(u, 'UNF:6:qs7MinjKNf+1+wy/RfVNvA==')
-        return
-
-    def test_dim_2_digits(self):
-        a = numpy.array([[1.2345678, 2, 3], [4, 5, 6]])
-        u = unf.unf(a, 6)
-        self.assertEqual(u, 'UNF:6:N6:FXXlk9tS02EIpobkfwDUgQ==')
-        a = numpy.array([[4, 5, 6], [1.2345678, 2, 3]])
-        u = unf.unf(a, 6)
-        self.assertEqual(u, 'UNF:6:N6:FXXlk9tS02EIpobkfwDUgQ==')
         return
 
     def test_dim_2_1a(self):
@@ -513,11 +506,179 @@ class TestNumpy(unittest.TestCase):
         self.assertEqual(u, 'UNF:6:2FSEGfhYpvPqVoY3AlpNrw==')
         return
 
+    def test_dim_2_single_value(self):
+        u = unf.unf(1)
+        self.assertFalse(unf._normalize_numpy.called)
+        nu = unf.unf(numpy.array([[1]]))
+        self.assertTrue(unf._normalize_numpy.called)
+        self.assertEqual(u, nu)
+        return
+
     def test_dim_3(self):
         a = numpy.zeros((2, 3, 4))
         with self.assertRaises(ValueError):
             unf.unf(a)
         return
+
+    # ---------------------------------------------------------
+    # value tests -- as base tests above
+
+    def test_vector(self):
+        val = numpy.array([1.23456789, 0])
+        u = 'UNF:6:0k7UOb0YlUtUQuA2Fyqy7Q=='
+        self.assertEqual(unf.unf(val), u)
+        self.assertTrue(unf._normalize_numpy.called)
+        return
+
+    def test_1t9_unf(self):
+        val = numpy.array([1.23456789])
+        u = 'UNF:6:vcKELUSS4s4k1snF4OTB9A=='
+        self.assertEqual(unf.unf(val), u)
+        self.assertTrue(unf._normalize_numpy.called)
+        return
+
+    def test_1t9_9_digits_unf(self):
+        val = numpy.array([1.23456789])
+        u = 'UNF:6:N9:IKw+l4ywdwsJeDze8dplJA=='
+        self.assertEqual(unf.unf(val, 9), u)
+        self.assertTrue(unf._normalize_numpy.called)
+        return
+
+    def test_0(self):
+        val = numpy.array([0])
+        u = 'UNF:6:YUvj33xEHnzirIHQyZaHow=='
+        self.assertEqual(unf.unf(val), u)
+        self.assertTrue(unf._normalize_numpy.called)
+        return
+
+    def test_1(self):
+        val = numpy.array([1])
+        u = 'UNF:6:tv3XYCv524AfmlFyVOhuZg=='
+        self.assertEqual(unf.unf(val), u)
+        self.assertTrue(unf._normalize_numpy.called)
+        return
+
+    def test_m300(self):
+        val = numpy.array([-300])
+        u = 'UNF:6:ZTXyg54FoMfRDWZl6oWmFQ=='
+        self.assertEqual(unf.unf(val), u)
+        self.assertTrue(unf._normalize_numpy.called)
+        return
+
+    def test_pi(self):
+        val = numpy.array([3.1415])
+        u = 'UNF:6:vOSZmXXXpKfQcqZ0Cuu5/w=='
+        self.assertEqual(unf.unf(val), u)
+        self.assertTrue(unf._normalize_numpy.called)
+        return
+
+    def test_73em4(self):
+        val = numpy.array([0.00073])
+        u = 'UNF:6:qhw3qzg3fEK0NNfoVxk4jQ=='
+        self.assertEqual(unf.unf(val), u)
+        self.assertTrue(unf._normalize_numpy.called)
+        return
+
+    def test_nan(self):
+        val = numpy.array([float('NaN')])
+        u = 'UNF:6:GNcR8/UCnImaPpw47gdPNg=='
+        self.assertEqual(unf.unf(val), u)
+        self.assertTrue(unf._normalize_numpy.called)
+        return
+
+    def test_positive_inf(self):
+        val = numpy.array([float('+Inf')])
+        u = 'UNF:6:MdAI70WZdDHnu6qmkpqUQg=='
+        self.assertEqual(unf.unf(val), u)
+        self.assertTrue(unf._normalize_numpy.called)
+        return
+
+    def test_negative_inf(self):
+        val = numpy.array([float('-Inf')])
+        u = 'UNF:6:A7orv3pgAhljFnGjQVLCog=='
+        self.assertEqual(unf.unf(val), u)
+        self.assertTrue(unf._normalize_numpy.called)
+        return
+
+    def test_pos_zero(self):
+        val = numpy.array([0.0])
+        u = 'UNF:6:YUvj33xEHnzirIHQyZaHow=='
+        self.assertEqual(unf.unf(val), u)
+        self.assertTrue(unf._normalize_numpy.called)
+        return
+
+    def test_neg_zero(self):
+        val = numpy.array([-0.0])
+        u = 'UNF:6:qDM4PMUq1cMW+bqfBLBGZg=='
+        self.assertEqual(unf.unf(val), u)
+        self.assertTrue(unf._normalize_numpy.called)
+        return
+
+    def test_round_1(self):
+        val = numpy.array([1.2345635])
+        u = 'UNF:6:auhsR5DIScLiAUb/SA2YVA=='
+        self.assertEqual(unf.unf(val), u)
+        self.assertTrue(unf._normalize_numpy.called)
+        return
+
+    def test_round_2(self):
+        val = numpy.array([1.2345645])
+        u = 'UNF:6:auhsR5DIScLiAUb/SA2YVA=='
+        self.assertEqual(unf.unf(val), u)
+        self.assertTrue(unf._normalize_numpy.called)
+        return
+
+    def test_round_3(self):
+        val = numpy.array([12345635])
+        u = 'UNF:6:qnKXlm182LZPFz9JzxTiNg=='
+        self.assertEqual(unf.unf(val), u)
+        self.assertTrue(unf._normalize_numpy.called)
+        return
+
+    def test_round_4(self):
+        val = numpy.array([12345645])
+        u = 'UNF:6:qnKXlm182LZPFz9JzxTiNg=='
+        self.assertEqual(unf.unf(val), u)
+        self.assertTrue(unf._normalize_numpy.called)
+        return
+
+    def test_large_exponent(self):
+        val = numpy.array([1.234567e150])
+        u = 'UNF:6:qcKO4c5rvHfQ3nHzqrAS/Q=='
+        self.assertEqual(unf.unf(val), u)
+        self.assertTrue(unf._normalize_numpy.called)
+        return
+
+    def test_tiny_exponent(self):
+        val = numpy.array([1.234567e-150])
+        u = 'UNF:6:vbTNUOoynDv6UKxOn36WeQ=='
+        self.assertEqual(unf.unf(val), u)
+        self.assertTrue(unf._normalize_numpy.called)
+        return
+
+    def test_digits_value_1(self):
+        val = numpy.array([1.2345678])
+        u = 'UNF:6:N6:Z8pf0CubsQBVtRiOQLQNVA=='
+        self.assertEqual(unf.unf(val, 6), u)
+        self.assertTrue(unf._normalize_numpy.called)
+        return
+
+    def test_digits_value_2(self):
+        val = numpy.array([1.2345678])
+        u = 'UNF:6:N8:TCfkDjJvqAJ7wy4sdQFRaw=='
+        self.assertEqual(unf.unf(val, 8), u)
+        self.assertTrue(unf._normalize_numpy.called)
+        return
+
+    def test_digits_value_3(self):
+        val = numpy.array([1.2345678])
+        u = 'UNF:6:N9:TCfkDjJvqAJ7wy4sdQFRaw=='
+        self.assertEqual(unf.unf(val, 9), u)
+        self.assertTrue(unf._normalize_numpy.called)
+        return
+
+    # ---------------------------------------------------------
+    # extra numpy value tests
 
     # Versions through 0.7.1 have an error where scaled values
     # lose leading zeros after the decimal point.  So 0.9005000798402081
