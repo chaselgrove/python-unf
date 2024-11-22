@@ -59,6 +59,13 @@ This contradicts the assertion in the R documentation ([4]) that:
     signif(x, dig) is the same as round(x, dig - ceiling(log10(abs(x))))
 
 [1]: https://guides.dataverse.org/en/latest/developers/unf/unf-v6.html
+1: [https://guides.dataverse.org/en/latest/developers/unf/unf-v6.html][1]
+
 [2]: https://raw.githubusercontent.com/IQSS/UNF/master/doc/unf_examples.txt
+2: [https://raw.githubusercontent.com/IQSS/UNF/master/doc/unf_examples.txt][2]
+
 [3]: https://cran.r-project.org/web/packages/UNF/index.html
+3: [https://cran.r-project.org/web/packages/UNF/index.html][3]
+
 [4]: https://stat.ethz.ch/R-manual/R-devel/library/base/html/Round.html
+4: [https://stat.ethz.ch/R-manual/R-devel/library/base/html/Round.html][4]
