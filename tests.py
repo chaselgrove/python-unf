@@ -362,59 +362,59 @@ class TestDigits(unittest.TestCase):
 
     def test_type_error(self):
         with self.assertRaises(TypeError):
-            unf.unf('', digits='')
+            unf.unf('', '')
         return
 
     def test_value_error(self):
         with self.assertRaises(ValueError):
-            unf.unf('', digits=0)
+            unf.unf('', 0)
         return
 
     # ---------------------------------------------------------
     # the following should be unaffected by digits=2
 
     def test_missing(self):
-        u = unf.unf(None, digits=2)
+        u = unf.unf(None, 2)
         self.assertEqual(u, 'UNF:6:N2:cJ6AyISHokEeHuTfufIqhg==')
         return
 
     def test_string(self):
-        u = unf.unf('A character String', digits=2)
+        u = unf.unf('A character String', 2)
         self.assertEqual(u, 'UNF:6:N2:FYqU7uBl885eHMbpco1ooA==')
         return
 
     def test_nan(self):
-        u = unf.unf(float('NaN'), digits=2)
+        u = unf.unf(float('NaN'), 2)
         self.assertEqual(u, 'UNF:6:N2:GNcR8/UCnImaPpw47gdPNg==')
         return
 
     def test_positive_inf(self):
-        u = unf.unf(float('+Inf'), digits=2)
+        u = unf.unf(float('+Inf'), 2)
         self.assertEqual(u, 'UNF:6:N2:MdAI70WZdDHnu6qmkpqUQg==')
         return
 
     def test_negative_inf(self):
-        u = unf.unf(float('-Inf'), digits=2)
+        u = unf.unf(float('-Inf'), 2)
         self.assertEqual(u, 'UNF:6:N2:A7orv3pgAhljFnGjQVLCog==')
         return
 
     def test_positive_zero(self):
-        u = unf.unf(0.0, digits=2)
+        u = unf.unf(0.0, 2)
         self.assertEqual(u, 'UNF:6:N2:YUvj33xEHnzirIHQyZaHow==')
         return
 
     def test_negative_zero(self):
-        u = unf.unf(-0.0, digits=2)
+        u = unf.unf(-0.0, 2)
         self.assertEqual(u, 'UNF:6:N2:qDM4PMUq1cMW+bqfBLBGZg==')
         return
 
     def test_0(self):
-        u = unf.unf(0, digits=2)
+        u = unf.unf(0, 2)
         self.assertEqual(u, 'UNF:6:N2:YUvj33xEHnzirIHQyZaHow==')
         return
 
     def test_1(self):
-        u = unf.unf(1, digits=2)
+        u = unf.unf(1, 2)
         self.assertEqual(u, 'UNF:6:N2:tv3XYCv524AfmlFyVOhuZg==')
         return
 
@@ -422,7 +422,7 @@ class TestDigits(unittest.TestCase):
     # value tests, including header checks
 
     def test_value_1(self):
-        u = unf.unf(1.2345678, digits=6)
+        u = unf.unf(1.2345678, 6)
         self.assertEqual(u, 'UNF:6:N6:Z8pf0CubsQBVtRiOQLQNVA==')
         return
 
@@ -433,14 +433,14 @@ class TestDigits(unittest.TestCase):
         return
 
     def test_value_2(self):
-        u = unf.unf(1.2345678, digits=8)
+        u = unf.unf(1.2345678, 8)
         self.assertEqual(u, 'UNF:6:N8:TCfkDjJvqAJ7wy4sdQFRaw==')
         return
 
     # Should be the same as digits=8 since we run out of significant 
     # digits in the value.
     def test_value_3(self):
-        u = unf.unf(1.2345678, digits=9)
+        u = unf.unf(1.2345678, 9)
         self.assertEqual(u, 'UNF:6:N9:TCfkDjJvqAJ7wy4sdQFRaw==')
         return
 
