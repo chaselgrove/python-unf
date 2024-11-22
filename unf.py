@@ -158,7 +158,7 @@ def _normalize_numpy(data, digits):
     n_ipart = numpy.floor_divide(n_int, dpow)
     n_fpart = n_int % dpow
 
-    n_ipart = n_ipart.astype('uint8') + 48
+    n_ipart = n_ipart.astype('uint8') + ord(b'0')
     n_ipart.dtype = 'S1'
 
     s += n_ipart + b'.'
@@ -167,7 +167,7 @@ def _normalize_numpy(data, digits):
     for i in range(digits-1):
         n_fpart_s[i,:] = n_fpart % 10
         n_fpart //= 10
-    n_fpart_s += 48
+    n_fpart_s += ord(b'0')
     n_fpart_s.dtype = 'S1'
     remove = numpy.full(n_fpart.shape, True)
     for i in range(digits-1):
@@ -183,13 +183,12 @@ def _normalize_numpy(data, digits):
 
     s += b'e' + exp_sign_arr
 
-    # TODO check exp range
     exp_s = numpy.empty((3, *exp.shape), dtype='uint8')
 
     for i in range(3):
         exp_s[i,:] = exp % 10
         exp //= 10
-    exp_s += 48
+    exp_s += ord(b'0')
     exp_s.dtype = 'S1'
     remove = numpy.full(exp.shape, True)
     for i in range(2, -1, -1):
