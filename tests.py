@@ -849,4 +849,100 @@ class TestPandas(unittest.TestCase):
         self.assertEqual(u, 'UNF:6:N6:SoKpWA1mdIXyd/7/QAqdVQ==')
         return
 
+class DocsTests(unittest.TestCase):
+
+    # Test assertions and examples in the documentation.
+
+    def test_basic(self):
+        val = 1.23456789
+        u = 'UNF:6:vcKELUSS4s4k1snF4OTB9A=='
+        self.assertEqual(unf.unf(val), u)
+        return
+
+    def test_basic_digits(self):
+        val = 1.23456789
+        u = 'UNF:6:N9:IKw+l4ywdwsJeDze8dplJA=='
+        self.assertEqual(unf.unf(val, 9), u)
+        return
+
+    def test_none(self):
+        val = [1.23456789, None, 0]
+        u = 'UNF:6:Do5dfAoOOFt4FSj0JcByEw=='
+        self.assertEqual(unf.unf(val), u)
+        return
+
+    @unittest.skipIf(not numpy, 'numpy not installed')
+    def test_numpy(self):
+        val = numpy.array([1, 2, 3])
+        u = 'UNF:6:AvELPR5QTaBbnq6S22Msow=='
+        self.assertEqual(unf.unf(val), u)
+        return
+
+    @unittest.skipIf(not numpy, 'numpy not installed')
+    def test_numpy_collection_of_vectors(self):
+        val1 = numpy.array([[1, 2], [3, 4]])
+        val2 = numpy.array([[3, 4], [1, 2]])
+        self.assertEqual(unf.unf(val1), unf.unf(val2))
+        return
+
+    @unittest.skipIf(not numpy, 'numpy not installed')
+    def test_numpy_collection_of_one_vector(self):
+        val1 = numpy.array([[1, 2]])
+        val2 = numpy.array([1, 2])
+        self.assertEqual(unf.unf(val1), unf.unf(val2))
+        return
+
+    @unittest.skipIf(not numpy, 'numpy not installed')
+    def test_numpy_collection_of_vectors_2(self):
+        val1 = numpy.array([[1], [2]])
+        val2 = numpy.array([[2], [1]])
+        self.assertEqual(unf.unf(val1), unf.unf(val2))
+        return
+
+    @unittest.skipIf(not numpy, 'numpy not installed')
+    def test_numpy_primitive(self):
+        val = numpy.array([1])[0]
+        with self.assertRaises(Exception):
+            unf.unf(val)
+        return
+
+    @unittest.skipIf(not numpy, 'numpy not installed')
+    def test_numpy_n_dim(self):
+        val = numpy.zeros((2, 3, 4))
+        with self.assertRaises(Exception):
+            unf.unf(val)
+        return
+
+    @unittest.skipIf(not numpy, 'numpy not installed')
+    def test_numpy_none(self):
+        a = numpy.array([None], dtype=float)
+        self.assertTrue(math.isnan(a[0]))
+        return
+
+    @unittest.skipIf(not pandas, 'pandas not installed')
+    def test_pandas_series(self):
+        value = pandas.Series([1, 2, 3])
+        u = 'UNF:6:AvELPR5QTaBbnq6S22Msow=='
+        self.assertEqual(unf.unf(value), u)
+        return
+
+    @unittest.skipIf(not pandas, 'pandas not installed')
+    def test_pandas_data_frame(self):
+        value = pandas.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6]})
+        u = 'UNF:6:Np0sj111a+rrJBgl6wNF9w=='
+        self.assertEqual(unf.unf(value), u)
+        return
+
+    @unittest.skipIf(not pandas, 'pandas not installed')
+    def test_pandas_na_object(self):
+        s = pandas.Series([1, pandas.NA])
+        self.assertEqual(s.dtype, 'O')
+        return
+
+    @unittest.skipIf(not pandas, 'pandas not installed')
+    def test_pandas_none(self):
+        s = pandas.Series([None], dtype=float)
+        self.assertTrue(math.isnan(s[0]))
+        return
+
 # eof

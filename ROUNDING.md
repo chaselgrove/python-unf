@@ -1,4 +1,4 @@
-The UNF specification (as of Version 6 ([1])) states that for numeric
+The UNF specification (Version 6 ([1])) states that for numeric
 elements, we "round each vector element to N significant digits
 using the IEEE 754 'round towards nearest, ties to even' rounding
 mode."  The specification does not tell us if the rounding should
@@ -6,7 +6,7 @@ be done on the exact value or the floating-point representation of
 the number.
 
 The examples provided with the specification ([2]) are no help in
-this respect.  The two high-precision values given, 1.2345675 and
+this respect.  The two high-precision values, 1.2345675 and
 1.2345685, round trivially to 1.234568 because the floating-point
 representation of each is slightly closer than its exact value to
 1.234568.  So the "ties to even" rule does not apply if we consider
@@ -31,25 +31,25 @@ than to fight a technicality (during which time we set up the
 scientific archive for future confusion: is that an R UNF or a
 Python UNF?).
 
-The R package UNF (Version 2.0.7) uses signif() to round numbers
-in its numeric normalization code (as.unfvector.numeric()).  This
-in turn calls fprec() in the R C code, which rounds by scaling
+The R package UNF (Version 2.0.7) uses `signif()` to round numbers
+in its numeric normalization code (`as.unfvector.numeric()`).  This
+in turn calls `fprec()` in the C code, which rounds by scaling
 numbers so that all of the significant digits are to the left of
-the decimal point and then rounding to an integer using rint().  So
+the decimal point and then rounding to an integer using `rint()`.  So
 in our case, 1.2345635 is scaled to 1234563.5 and 1.2345645 is
 scaled to 1234564.5, and these, having exact floating-point
 representations, both round to 1234564, which is then scaled back
 to 1.234564.  This code (python-unf) follows this algorithm in order
 to match the R UNF implementation.
 
-It is interesting to note that in R (Version 4.1.2), signif() and
-round() behave differently when handling this sort of value: signif()
+It is interesting to note that in R (Version 4.1.2), `signif()` and
+`round()` behave differently when handling this sort of value: `signif()`
 uses the scheme described above to emulate exact values:
 
     > signif(1.2345635, 7)
     [1] 1.234564
 
-while round() appears to use the floating-point representation:
+while `round()` appears to use the floating-point representation:
 
     > round(1.2345635, 6)
     [1] 1.234563
