@@ -74,3 +74,19 @@ https://github.com/chaselgrove/python-unf
     Removed Python 3.7 support.
 
     Added Python 3.11 and 3.12 to tests.
+
+0.11.0 -- 27 November 2024
+
+    Updated Python support to Versions 3.9-3.13.
+
+    Added pandas support.
+
+    Fixed a NumPy large number bug.
+
+    Implemented some NumPy optimizations.
+
+    Added support for 2-D NumPy arrays (as collections of collections).
+
+    Updated the API (constants and exposed functions).
+
+    Updated docstrings.
